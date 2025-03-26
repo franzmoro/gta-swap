@@ -4,33 +4,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-
-const fileNames = [
-  'src',
-  'components',
-  'assets',
-  'hooks',
-  'screens',
-  'theme',
-  'app-types',
-  'utils',
-  'constants',
-  'routes',
-  'adapters',
-  'integrations',
-  'abis',
-  'atoms',
-];
-
-const filePaths = fileNames.reduce(
-  (filePathAcc, currentFileName) => ({
-    ...filePathAcc,
-    [`@${currentFileName}`]: `/${
-      currentFileName === 'src' ? currentFileName : `src/${currentFileName}`
-    }`,
-  }),
-  {}
-);
+import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,9 +13,10 @@ export default defineConfig({
     tsconfigPaths(),
     react({
       babel: {
-        presets: ['jotai/babel/preset'],
+        presets: [],
       },
     }),
+    tailwindcss(),
     nodePolyfills({
       exclude: ['fs'],
       // Whether to polyfill specific globals.
@@ -66,7 +42,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      ...filePaths,
+      '@': path.resolve(__dirname, './src'),
       process: 'process/browser',
       path: 'path-browserify',
       os: 'os-browserify',
