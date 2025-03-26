@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.eslintrc
+env.d.ts
+.env
+.env.*
+*.codegen.tsx
+*.codegen.ts
+*.gen.*
+*.gen.ts
+idl/
