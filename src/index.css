@@ -5,28 +5,28 @@
 
 @font-face {
   font-family: 'PP Supply Mono';
-  src: url('/src/fonts/PPSupplyMono-Regular.otf') format('opentype');
+  src: url('/src/assets/fonts/PPSupplyMono-Regular.otf') format('opentype');
   font-weight: 400; /* Regular */
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PP Supply Mono';
-  src: url('/src/fonts/PPSupplyMono-UltraLight.otf') format('opentype');
+  src: url('/src/assets/fonts/PPSupplyMono-UltraLight.otf') format('opentype');
   font-weight: 200; /* Ultra Light */
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PP Supply Sans';
-  src: url('/src/fonts/PPSupplySans-Regular.otf') format('opentype');
+  src: url('/src/assets/fonts/PPSupplySans-Regular.otf') format('opentype');
   font-weight: 400; /* Regular */
   font-style: normal;
 }
 
 @font-face {
   font-family: 'PP Supply Sans';
-  src: url('/src/fonts/PPSupplySans-UltraLight.otf') format('opentype');
+  src: url('/src/assets/fonts/PPSupplySans-UltraLight.otf') format('opentype');
   font-weight: 200; /* Ultra Light */
   font-style: normal;
 }
