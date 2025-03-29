@@ -1,5 +1,7 @@
 import CurrencyBox from '@/components/currency-box';
+import TransactionSettings from '@/components/transaction-settings';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
 import { tokens } from '@/constants/tokens';
 import { SwapMode, Token } from '@/types';
@@ -49,9 +51,16 @@ const Swap = () => {
             <h2 className="text-2xl font-semibold">Swap</h2>
             <div className="flex items-center gap-2">
               <ConnectWalletButton />
-              <Button size="icon" variant="ghost">
-                <Settings className="h-5 w-5" />
-              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button size="icon" variant="ghost">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-xs">
+                  <TransactionSettings />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

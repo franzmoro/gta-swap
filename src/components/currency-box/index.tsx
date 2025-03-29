@@ -48,9 +48,9 @@ const CurrencyBox = ({ mode, onChange, onSelectToken, selectedToken, value }: Cu
                 {selectedToken ?
                   <div className="flex items-center gap-2">
                     <TokenLogo size={28} tokenSrc={selectedToken.logo} />
-                    <p className="text-lg">{selectedToken.symbol}</p>
+                    <p className="text-sm">{selectedToken.symbol}</p>
                   </div>
-                : <p className="text-base font-medium">Select Token</p>}
+                : <p className="text-sm font-medium">Select Token</p>}
                 <ChevronDown className="mt-1 size-4" />
               </Button>
             </DialogTrigger>
