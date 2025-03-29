@@ -111,7 +111,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground tracking-wider;
+    @apply bg-background tracking-wider text-foreground;
     font-family: 'PP Supply Sans', sans-serif;
   }
   h1,
@@ -120,7 +120,7 @@
   h4,
   h5,
   h6 {
-    @apply text-primary tracking-normal;
+    @apply tracking-normal text-primary;
     font-family: 'PP Supply Mono', monospace;
   }
 }
