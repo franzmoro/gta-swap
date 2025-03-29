@@ -1,7 +1,6 @@
 import AutoPercentageSwitch from './switch-button';
+import InfoButton from '@/components/tooltip';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info } from 'lucide-react';
 
 const TransactionSettings = () => {
   return (
@@ -9,33 +8,14 @@ const TransactionSettings = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <p className="text-sm font-medium">Max. slippage</p>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-4 w-4 fill-foreground text-primary-foreground" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs border" side="bottom" sideOffset={10}>
-                Your transaction will revert if the price changes more than the slippage percentage.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <InfoButton content="Your transaction will revert if the price changes more than the slippage percentage." />
         </div>
         <AutoPercentageSwitch />
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <p className="text-sm font-medium">Tx. deadline</p>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="h-4 w-4 fill-foreground text-primary-foreground" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs border" side="bottom" sideOffset={10}>
-                Your transaction will revert if it is pending for more than this period of time.
-                (Maximum: 3 days).
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <InfoButton content="Your transaction will revert if it is pending for more than this period of time. (Maximum: 3 days)." />
         </div>
         <div className={'flex items-center justify-center rounded-full border px-3 py-1.5'}>
           <Input

@@ -33,7 +33,10 @@ const TokenSelectModalContent = ({ onSelectToken }: { onSelectToken: (token: Tok
                 </div>
               </div>
             </div>
-            <p className="mr-2">1000</p>
+            <div className="mr-2 flex flex-col items-end gap-2">
+              <p>1000</p>
+              <p className="text-xs text-foreground/50">$ 1000</p>
+            </div>
           </button>
         ))}
       </div>

@@ -1,7 +1,7 @@
 import { TokenLogo } from '@/components/token-logo';
 import TokenSelectModalContent from '@/components/token-select-modal';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { SwapMode, Token } from '@/types';
 import { ChevronDown } from 'lucide-react';
@@ -43,6 +43,7 @@ const CurrencyBox = ({ mode, onChange, onSelectToken, selectedToken, value }: Cu
 
         <div className="flex flex-col items-end gap-2">
           <Dialog modal onOpenChange={setOpen} open={open}>
+            <DialogOverlay />
             <DialogTrigger asChild>
               <Button className="flex items-center gap-0.5 rounded-full bg-primary hover:bg-primary/75">
                 {selectedToken ?

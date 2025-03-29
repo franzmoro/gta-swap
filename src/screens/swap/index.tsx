@@ -1,4 +1,5 @@
 import CurrencyBox from '@/components/currency-box';
+import SwapReviewModal from '@/components/swap-review-modal';
 import TransactionSettings from '@/components/transaction-settings';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -31,6 +32,8 @@ const Swap = () => {
       token: null,
     },
   });
+
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const onTokenSelect = (token: Token, mode: SwapMode) => {
     setSwapState((prev) => ({
       ...prev,
@@ -106,7 +109,7 @@ const Swap = () => {
           {/* Footer */}
           <div className="flex flex-col gap-4">
             {/* <ConnectWalletButton className="w-full" size="lg" /> */}
-            <Button className="w-full text-lg" size="lg">
+            <Button className="w-full text-lg" onClick={() => setIsReviewModalOpen(true)} size="lg">
               Review
             </Button>
           </div>
@@ -114,6 +117,7 @@ const Swap = () => {
           {/* <Button className="w-full">Lime Green Button</Button> */}
         </div>
       </div>
+      <SwapReviewModal isOpen={isReviewModalOpen} onOpenChange={setIsReviewModalOpen} />
     </div>
   );
 };
