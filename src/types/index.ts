@@ -1,3 +1,7 @@
+export enum Slippage {
+  AUTO = 'Auto',
+}
+
 export enum SwapMode {
   BUY = 'buy',
   SELL = 'sell',

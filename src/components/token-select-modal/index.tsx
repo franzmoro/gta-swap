@@ -1,12 +1,8 @@
-import { TokenLogo } from '../token-logo';
+import { TokenLogo } from '@/components/token-logo';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { tokens } from '@/constants/tokens';
+import { shortenAddress } from '@/lib/utils';
 import { Token } from '@/types';
-
-const shortenAddress = (address: string) => {
-  if (!address) return '';
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
 
 const TokenSelectModalContent = ({ onSelectToken }: { onSelectToken: (token: Token) => void }) => {
   return (

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
 import { tokens } from '@/constants/tokens';
+import useWeb3React from '@/hooks/use-web3-react';
 import { SwapMode, Token } from '@/types';
 import { ArrowUpDown, Settings } from 'lucide-react';
 import { useState } from 'react';
@@ -21,6 +22,8 @@ type SwapState = {
 };
 
 const Swap = () => {
+  const { isBaseSelected, isConnected } = useWeb3React();
+
   // TODO: This is temporary. Move to context once integration starts
   const [swapState, setSwapState] = useState<SwapState>({
     [SwapMode.BUY]: {
@@ -108,13 +111,17 @@ const Swap = () => {
 
           {/* Footer */}
           <div className="flex flex-col gap-4">
-            {/* <ConnectWalletButton className="w-full" size="lg" /> */}
-            <Button className="w-full text-lg" onClick={() => setIsReviewModalOpen(true)} size="lg">
-              Review
-            </Button>
+            {!isConnected || !isBaseSelected ?
+              <ConnectWalletButton size="lg" />
+            : <Button
+                className="w-full text-lg"
+                onClick={() => setIsReviewModalOpen(true)}
+                size="lg"
+              >
+                Review
+              </Button>
+            }
           </div>
-
-          {/* <Button className="w-full">Lime Green Button</Button> */}
         </div>
       </div>
       <SwapReviewModal isOpen={isReviewModalOpen} onOpenChange={setIsReviewModalOpen} />

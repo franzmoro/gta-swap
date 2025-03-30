@@ -124,3 +124,9 @@
     font-family: 'PP Supply Mono', monospace;
   }
 }
+
+@layer components {
+  .btn-wallet-connect {
+    @apply !border !border-secondary !bg-transparent !px-4 !py-2 !text-sm !text-secondary hover:!bg-secondary hover:!text-primary-foreground has-[>svg]:!px-3;
+  }
+}
