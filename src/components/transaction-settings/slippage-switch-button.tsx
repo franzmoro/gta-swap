@@ -21,8 +21,8 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
 
   const [isCustomSlippage, setIsCustomSlippage] = useState<boolean>(false);
 
-  const [localSlippage, setLocalSlippage] = useState<number>(
-    slippage === Slippage.AUTO || slippage === '' ? AUTO_SLIPPAGE_VALUE : slippage
+  const [localSlippage, setLocalSlippage] = useState<'' | number>(
+    slippage === Slippage.AUTO || slippage === '' ? '' : slippage
   );
   const [, setSlippageError] = useState<null | SlippageError>(null);
 
@@ -31,7 +31,7 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
       setLocalSlippage(AUTO_SLIPPAGE_VALUE);
       setIsCustomSlippage(false);
     } else {
-      setLocalSlippage(slippage === Slippage.AUTO ? AUTO_SLIPPAGE_VALUE : slippage);
+      setLocalSlippage(slippage === Slippage.AUTO ? '' : slippage);
       setIsCustomSlippage(slippage !== Slippage.AUTO);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,11 +44,10 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
   const onSwitchToggle = (switchTo: 'auto' | 'custom') => {
     if (switchTo === 'auto') {
       onUpdateSlippage(Slippage.AUTO);
-      setLocalSlippage(AUTO_SLIPPAGE_VALUE);
       setIsCustomSlippage(false);
-    } else {
-      setIsCustomSlippage(true);
-    }
+    } else setIsCustomSlippage(true);
+
+    setLocalSlippage('');
   };
 
   const onChangeLocalSlippage = (value: string) => {
@@ -95,7 +94,7 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
   const onBlur = () => {
     if (
       localSlippage === AUTO_SLIPPAGE_VALUE ||
-      Number.isNaN(localSlippage) ||
+      !localSlippage ||
       localSlippage === AUTO_SLIPPAGE_VALUE
     ) {
       setIsCustomSlippage(false);
@@ -107,7 +106,7 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
     <div className={cn('flex items-center rounded-full border p-1 shadow-sm', className)}>
       <div
         className={cn(
-          'flex items-center justify-center rounded-full px-4 py-1 transition-colors',
+          'flex items-center justify-center rounded-full px-4 py-1',
           !isCustomSlippage ?
             'bg-primary text-primary-foreground'
           : 'bg-transparent text-foreground/50'
@@ -122,20 +121,21 @@ const SlippageSwitchButton = ({ className }: AutoPercentageSwitchProps) => {
       </div>
       <div
         className={cn(
-          'flex items-center justify-center rounded-full px-2 py-0.5 transition-colors',
+          'flex items-center justify-center rounded-full px-2 py-0.5',
           isCustomSlippage ?
             'bg-primary text-primary-foreground'
           : 'bg-transparent text-foreground/50'
         )}
       >
         <Input
-          className="h-auto w-8 border-none p-0 text-right focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className="h-auto w-8 border-none p-0 text-right focus:placeholder:text-transparent focus-visible:ring-0 focus-visible:ring-offset-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           min="0"
           onBlur={onBlur}
           onChange={(e) => handleSlippageChange(e.target.value)}
           onClick={() => onSwitchToggle('custom')}
           onKeyDown={handleKeyDown}
           pattern="^[0-9]*[.,]?[0-9]*$"
+          placeholder={AUTO_SLIPPAGE_VALUE.toString()}
           type="number"
           value={localSlippage}
         />
