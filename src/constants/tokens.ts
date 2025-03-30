@@ -1,14 +1,16 @@
 import { Token } from '@/types';
 
+export const NATIVE_TOKEN: Token = {
+  address: '0x0000000000000000000000000000000000000000',
+  decimals: 18,
+  isNative: true,
+  logo: 'https://token-icons.s3.amazonaws.com/eth.png',
+  name: 'Ethereum',
+  symbol: 'ETH',
+};
+
 export const tokens: Token[] = [
-  {
-    address: '0x0000000000000000000000000000000000000000',
-    decimals: 18,
-    isNative: true,
-    logo: 'https://token-icons.s3.amazonaws.com/eth.png',
-    name: 'Ethereum',
-    symbol: 'ETH',
-  },
+  NATIVE_TOKEN,
   {
     address: '0x678685765D6eDb6E08f4c7C32D4f71b54bdA0291',
     decimals: 18,
