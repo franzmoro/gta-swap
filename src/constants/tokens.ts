@@ -14,7 +14,7 @@ export const tokens: Token[] = [
   {
     address: GTA_ERC20,
     decimals: 18,
-    logo: 'src/assets/images/fallback.png',
+    logo: 'src/assets/images/goatai-logo.png',
     name: 'G.O.A.T.AI',
     symbol: 'GOATAI',
   },
