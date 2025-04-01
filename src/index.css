@@ -129,4 +129,23 @@
   .btn-wallet-connect {
     @apply !border !border-secondary !bg-transparent !px-4 !py-2 !text-sm !text-secondary hover:!bg-secondary hover:!text-primary-foreground has-[>svg]:!px-3;
   }
+  .skeleton {
+    background-color: oklch(35% 0.0692 248.84); /* Slightly lighter than --card */
+    background-image: linear-gradient(
+      90deg,
+      oklch(35% 0.0692 248.84) 60%,
+      oklch(35% 0.0692 248.84) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
 }

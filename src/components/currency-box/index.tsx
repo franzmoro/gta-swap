@@ -1,8 +1,13 @@
+import { Skeleton } from '../ui/skeleton';
 import { TokenLogo } from '@/components/token-logo';
 import TokenSelectModalContent from '@/components/token-select-modal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogOverlay, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import useTokenBalance from '@/hooks/use-token-balance';
+import useWeb3React from '@/hooks/use-web3-react';
+import { NumberType } from '@/lib/utils/format-number';
+import { formatNumberOrString } from '@/lib/utils/format-number';
 import { SwapMode, Token } from '@/types';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
@@ -10,13 +15,23 @@ import { useState } from 'react';
 interface CurrencyBoxProps {
   mode: SwapMode;
   onChange: (value: string) => void;
+  onClickMax?: () => void;
   onSelectToken: (token: Token, mode: SwapMode) => void;
   selectedToken: null | Token;
   value: string;
 }
 
-const CurrencyBox = ({ mode, onChange, onSelectToken, selectedToken, value }: CurrencyBoxProps) => {
+const CurrencyBox = ({
+  mode,
+  onChange,
+  onClickMax,
+  onSelectToken,
+  selectedToken,
+  value,
+}: CurrencyBoxProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const { isBaseSelected, isConnected } = useWeb3React();
+  const { balance, isLoading } = useTokenBalance(selectedToken);
 
   const onTokenSelect = (token: Token) => {
     onSelectToken(token, mode);
@@ -41,7 +56,7 @@ const CurrencyBox = ({ mode, onChange, onSelectToken, selectedToken, value }: Cu
           <p className="mt-1 text-sm text-foreground/50">$0</p>
         </div>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end gap-2 self-baseline">
           <Dialog modal onOpenChange={setOpen} open={open}>
             <DialogOverlay />
             <DialogTrigger asChild>
@@ -60,12 +75,38 @@ const CurrencyBox = ({ mode, onChange, onSelectToken, selectedToken, value }: Cu
             </DialogContent>
           </Dialog>
 
-          <div className="gap flex items-center">
-            <p className="text-sm text-foreground/70">0.007 ETH</p>
-            <Button onClick={() => {}} size="sm" variant="unstyled">
-              Max
-            </Button>
-          </div>
+          {(
+            isConnected &&
+            isBaseSelected &&
+            selectedToken &&
+            balance?.value &&
+            balance.value > BigInt(0)
+          ) ?
+            <div className="flex w-full items-center justify-end">
+              {isLoading ?
+                <Skeleton className="skeleton h-3 w-[100px] rounded-sm" />
+              : <>
+                  <p className="text-sm text-foreground/70">
+                    {formatNumberOrString({
+                      input: balance?.displayValue,
+                      suffix: selectedToken.symbol,
+                      type: NumberType.TokenNonTx,
+                    })}
+                  </p>
+                  {mode === SwapMode.SELL && (
+                    <Button
+                      className="mx-1 p-0 text-xs"
+                      onClick={onClickMax}
+                      size="sm"
+                      variant="unstyled"
+                    >
+                      Max
+                    </Button>
+                  )}
+                </>
+              }
+            </div>
+          : null}
         </div>
       </div>
     </div>

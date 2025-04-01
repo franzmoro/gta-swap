@@ -2,9 +2,9 @@ import { client } from '@/adapters/thirdweb';
 import AvatarImg from '@/assets/images/avatar.png';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { BASE_CHAIN_CONFIG } from '@/constants/config';
 import useWeb3React from '@/hooks/use-web3-react';
 import { cn, shortenAddress } from '@/lib/utils';
-import { base } from 'thirdweb/chains';
 import { ConnectButton } from 'thirdweb/react';
 
 export const ConnectWalletButton = ({ size = 'default' }: { size?: 'default' | 'lg' }) => {
@@ -16,7 +16,7 @@ export const ConnectWalletButton = ({ size = 'default' }: { size?: 'default' | '
         Switch to Base Network
       </Button>
     : <ConnectButton
-        chain={base}
+        chain={BASE_CHAIN_CONFIG}
         client={client}
         connectButton={{
           className: cn('btn-wallet-connect', size === 'lg' ? '!h-12' : '!h-8'),

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
 import useSwapData from '@/hooks/use-swap-data';
+import { useAllTokenBalance } from '@/hooks/use-token-balance';
 import useWeb3React from '@/hooks/use-web3-react';
 import { SwapMode } from '@/types';
 import { ArrowUpDown, Settings } from 'lucide-react';
@@ -32,18 +33,20 @@ const SwapHeader = () => {
 };
 
 const SwapSection = () => {
-  const { onAmountChange, onSwitchToken, onTokenSelect, swapState } = useSwapData();
+  const { onClickMax, onSwitchToken, onTokenSelect, onUserInput, swapAmounts, swapState } =
+    useSwapData();
 
   return (
     <div className="flex flex-col items-center gap-4">
       <CurrencyBox
         mode={SwapMode.SELL}
         onChange={(value) => {
-          onAmountChange(value, SwapMode.SELL);
+          onUserInput(value, SwapMode.SELL);
         }}
+        onClickMax={onClickMax}
         onSelectToken={onTokenSelect}
         selectedToken={swapState[SwapMode.SELL].token}
-        value={swapState[SwapMode.SELL].amount}
+        value={swapAmounts.in}
       />
       <div className="relative flex w-full items-center justify-center">
         <div className="absolute h-px w-full bg-foreground/40"></div>
@@ -59,11 +62,11 @@ const SwapSection = () => {
       <CurrencyBox
         mode={SwapMode.BUY}
         onChange={(value) => {
-          onAmountChange(value, SwapMode.BUY);
+          onUserInput(value, SwapMode.BUY);
         }}
         onSelectToken={onTokenSelect}
         selectedToken={swapState[SwapMode.BUY].token}
-        value={swapState[SwapMode.BUY].amount}
+        value={swapAmounts.out}
       />
     </div>
   );
@@ -92,6 +95,8 @@ const SwapFooter = ({
 
 const SwapWidget = () => {
   const { isBaseSelected, isConnected } = useWeb3React();
+
+  useAllTokenBalance();
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
 

@@ -1,27 +1,20 @@
-import { base } from 'thirdweb/chains';
-import {
-  useActiveAccount,
-  useActiveWalletChain,
-  useActiveWalletConnectionStatus,
-  useSwitchActiveWalletChain,
-} from 'thirdweb/react';
+import { BASE_CHAIN_ID } from '@/constants/config';
+import { useAccount, useSwitchChain } from 'wagmi';
+
 const useWeb3React = () => {
-  const activeAccount = useActiveAccount();
-  const status = useActiveWalletConnectionStatus();
-  const activeChain = useActiveWalletChain();
-  const switchChain = useSwitchActiveWalletChain();
+  const { switchChain } = useSwitchChain();
+
+  const { address, chainId, isConnected, isConnecting } = useAccount();
 
   const switchNetworkToBase = () => {
-    switchChain(base);
+    switchChain({ chainId: BASE_CHAIN_ID });
   };
-
-  const { address } = activeAccount || {};
 
   return {
     address,
-    isBaseSelected: activeChain === base,
-    isConnected: status === 'connected',
-    isConnecting: status === 'connecting',
+    isBaseSelected: chainId === BASE_CHAIN_ID,
+    isConnected,
+    isConnecting,
     switchNetworkToBase,
   };
 };

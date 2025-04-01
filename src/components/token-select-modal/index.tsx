@@ -1,9 +1,11 @@
 import { TokenLogo } from '@/components/token-logo';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 import { tokens } from '@/constants/tokens';
+import { useAllTokenBalance } from '@/hooks/use-token-balance';
 import { shortenAddress } from '@/lib/utils';
+import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { Token } from '@/types';
-
 type TokenSelectModalContentProps = {
   excludeTokens?: Token[];
   onSelectToken: (token: Token) => void;
@@ -13,6 +15,8 @@ const TokenSelectModalContent = ({
   excludeTokens,
   onSelectToken,
 }: TokenSelectModalContentProps) => {
+  const { data, isLoading } = useAllTokenBalance();
+
   return (
     <>
       <DialogHeader>
@@ -40,8 +44,19 @@ const TokenSelectModalContent = ({
                 </div>
               </div>
               <div className="mr-2 flex flex-col items-end gap-2">
-                <p>1000</p>
-                <p className="text-xs text-foreground/50">$ 1000</p>
+                {isLoading ?
+                  <Skeleton className="skeleton h-4 w-[50px] rounded-sm" />
+                : <p>
+                    {data?.[token.address]?.value ?
+                      formatNumberOrString({
+                        input: data?.[token.address]?.displayValue,
+                        type: NumberType.TokenNonTx,
+                      })
+                    : ''}
+                  </p>
+                }
+
+                {/* <p className="text-xs text-foreground/50">$ 1000</p> */}
               </div>
             </button>
           ))}
