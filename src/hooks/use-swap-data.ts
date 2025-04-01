@@ -125,7 +125,8 @@ const useSwapData = () => {
   };
 
   const onUserInput = (amount: string, mode: SwapMode) => {
-    const sanitizedAmount = sanitizeNumber(amount);
+    const token = swapUserInputState[mode].token;
+    const sanitizedAmount = sanitizeNumber(amount, token?.decimals);
 
     setCurrentInputContext(mode);
     setSwapUserInputState((prev) => ({
@@ -143,11 +144,41 @@ const useSwapData = () => {
     setCurrentInputContext((prev) => (prev === SwapMode.SELL ? SwapMode.BUY : SwapMode.SELL));
   };
 
+  /**
+   * 1. Token is not selected
+   * 2. Amount is not entered
+   * 3. Amount is greater than balance
+   *
+   */
+
+  const swapActionButtonState = useMemo(() => {
+    if (!sellToken || !buyToken)
+      return {
+        disabled: true,
+        label: 'Select a token',
+      };
+    if (!swapAmountIn || !swapAmountOut)
+      return {
+        disabled: true,
+        label: 'Enter an amount',
+      };
+    if (swapAmountIn > formatEther(maxUsableSellBalance ?? BigInt(0)))
+      return {
+        disabled: true,
+        label: `Insufficient ${sellToken?.symbol}`,
+      };
+    return {
+      disabled: false,
+      label: 'Review',
+    };
+  }, [swapAmountIn, swapAmountOut, maxUsableSellBalance, sellToken, buyToken]);
+
   return {
     onClickMax,
     onSwitchToken,
     onTokenSelect,
     onUserInput,
+    swapActionButtonState,
     swapAmounts: {
       in: swapAmountIn,
       out: swapAmountOut,

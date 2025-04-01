@@ -60,11 +60,11 @@ const CurrencyBox = ({
           <Dialog modal onOpenChange={setOpen} open={open}>
             <DialogOverlay />
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-0.5 rounded-full bg-primary hover:bg-primary/75">
+              <Button className="flex items-center gap-0.5 rounded-full bg-primary/80 hover:bg-primary/45">
                 {selectedToken ?
                   <div className="flex items-center gap-2">
                     <TokenLogo size={28} tokenSrc={selectedToken.logo} />
-                    <p className="text-sm">{selectedToken.symbol}</p>
+                    <p className="text-[16px] font-extrabold">{selectedToken.symbol}</p>
                   </div>
                 : <p className="text-sm font-medium">Select Token</p>}
                 <ChevronDown className="mt-1 size-4" />

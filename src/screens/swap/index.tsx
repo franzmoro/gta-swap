@@ -32,47 +32,7 @@ const SwapHeader = () => {
   );
 };
 
-const SwapSection = () => {
-  const { onClickMax, onSwitchToken, onTokenSelect, onUserInput, swapAmounts, swapState } =
-    useSwapData();
-
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <CurrencyBox
-        mode={SwapMode.SELL}
-        onChange={(value) => {
-          onUserInput(value, SwapMode.SELL);
-        }}
-        onClickMax={onClickMax}
-        onSelectToken={onTokenSelect}
-        selectedToken={swapState[SwapMode.SELL].token}
-        value={swapAmounts.in}
-      />
-      <div className="relative flex w-full items-center justify-center">
-        <div className="absolute h-px w-full bg-foreground/40"></div>
-        <Button
-          className="z-10 rounded-full border-4 border-card"
-          onClick={onSwitchToken}
-          size="icon"
-          variant="secondary"
-        >
-          <ArrowUpDown className="h-5 w-5" />
-        </Button>
-      </div>
-      <CurrencyBox
-        mode={SwapMode.BUY}
-        onChange={(value) => {
-          onUserInput(value, SwapMode.BUY);
-        }}
-        onSelectToken={onTokenSelect}
-        selectedToken={swapState[SwapMode.BUY].token}
-        value={swapAmounts.out}
-      />
-    </div>
-  );
-};
-
-const SwapFooter = ({
+const SwapSection = ({
   isBaseSelected,
   isConnected,
   setIsReviewModalOpen,
@@ -81,15 +41,65 @@ const SwapFooter = ({
   isConnected: boolean;
   setIsReviewModalOpen: (open: boolean) => void;
 }) => {
+  const {
+    onClickMax,
+    onSwitchToken,
+    onTokenSelect,
+    onUserInput,
+    swapActionButtonState,
+    swapAmounts,
+    swapState,
+  } = useSwapData();
+
   return (
-    <div className="flex flex-col gap-4">
-      {!isConnected || !isBaseSelected ?
-        <ConnectWalletButton size="lg" />
-      : <Button className="w-full text-lg" onClick={() => setIsReviewModalOpen(true)} size="lg">
-          Review
-        </Button>
-      }
-    </div>
+    <>
+      <div className="flex flex-col items-center gap-4">
+        <CurrencyBox
+          mode={SwapMode.SELL}
+          onChange={(value) => {
+            onUserInput(value, SwapMode.SELL);
+          }}
+          onClickMax={onClickMax}
+          onSelectToken={onTokenSelect}
+          selectedToken={swapState[SwapMode.SELL].token}
+          value={swapAmounts.in}
+        />
+        <div className="relative flex w-full items-center justify-center">
+          <div className="absolute h-px w-full bg-foreground/40"></div>
+          <Button
+            className="z-10 rounded-full border-4 border-card"
+            onClick={onSwitchToken}
+            size="icon"
+            variant="secondary"
+          >
+            <ArrowUpDown className="h-5 w-5" />
+          </Button>
+        </div>
+        <CurrencyBox
+          mode={SwapMode.BUY}
+          onChange={(value) => {
+            onUserInput(value, SwapMode.BUY);
+          }}
+          onSelectToken={onTokenSelect}
+          selectedToken={swapState[SwapMode.BUY].token}
+          value={swapAmounts.out}
+        />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {!isConnected || !isBaseSelected ?
+          <ConnectWalletButton size="lg" />
+        : <Button
+            className="w-full text-[20px] font-extrabold"
+            disabled={swapActionButtonState.disabled}
+            onClick={() => setIsReviewModalOpen(true)}
+            size="lg"
+          >
+            {swapActionButtonState.label}
+          </Button>
+        }
+      </div>
+    </>
   );
 };
 
@@ -109,10 +119,7 @@ const SwapWidget = () => {
           <SwapHeader />
 
           {/* Card body */}
-          <SwapSection />
-
-          {/* Card footer */}
-          <SwapFooter
+          <SwapSection
             isBaseSelected={isBaseSelected}
             isConnected={isConnected}
             setIsReviewModalOpen={setIsReviewModalOpen}
