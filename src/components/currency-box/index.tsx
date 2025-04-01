@@ -60,7 +60,10 @@ const CurrencyBox = ({
           <Dialog modal onOpenChange={setOpen} open={open}>
             <DialogOverlay />
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-0.5 rounded-full bg-primary/80 hover:bg-primary/45">
+              <Button
+                className="flex items-center gap-0.5 rounded-full"
+                variant={selectedToken ? 'outline' : 'secondary'}
+              >
                 {selectedToken ?
                   <div className="flex items-center gap-2">
                     <TokenLogo size={28} tokenSrc={selectedToken.logo} />
