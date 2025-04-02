@@ -1,5 +1,5 @@
 import useWeb3React from './use-web3-react';
-import GtaErc20Abi from '@/abis/GtaERC20.json';
+import { ERC20_ABI } from '@/abis/Erc20';
 import { client } from '@/adapters/thirdweb';
 import { BASE_CHAIN_CONFIG } from '@/constants/config';
 import { tokens } from '@/constants/tokens';
@@ -9,12 +9,16 @@ import { useMemo } from 'react';
 import { getContract } from 'thirdweb';
 import { getBalance } from 'thirdweb/extensions/erc20';
 import { useWalletBalance } from 'thirdweb/react';
-import { Abi } from 'viem';
+
+export type TokenBalance = {
+  displayValue: string;
+  value: bigint;
+};
 
 const getBalanceToken = async (address: string, token: string) => {
   if (!address) return;
   const contract = getContract({
-    abi: GtaErc20Abi.abi as Abi,
+    abi: ERC20_ABI,
     address: token.toLowerCase(),
     chain: BASE_CHAIN_CONFIG,
     client: client,

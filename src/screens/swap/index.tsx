@@ -4,8 +4,10 @@ import TransactionSettings from '@/components/transaction-settings';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
+import { tokens } from '@/constants/tokens';
 import useSwapData from '@/hooks/use-swap-data';
 import { useAllTokenBalance } from '@/hooks/use-token-balance';
+import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import useWeb3React from '@/hooks/use-web3-react';
 import { SwapMode } from '@/types';
 import { ArrowUpDown, Settings } from 'lucide-react';
@@ -50,6 +52,8 @@ const SwapSection = ({
     swapAmounts,
     swapState,
   } = useSwapData();
+
+  useGetTokenUSDPrice(tokens[0]);
 
   return (
     <>

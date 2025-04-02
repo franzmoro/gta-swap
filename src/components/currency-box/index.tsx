@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogOverlay, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import useTokenBalance from '@/hooks/use-token-balance';
+import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import useWeb3React from '@/hooks/use-web3-react';
-import { NumberType } from '@/lib/utils/format-number';
+import { formatFiatPrice, NumberType } from '@/lib/utils/format-number';
 import { formatNumberOrString } from '@/lib/utils/format-number';
 import { SwapMode, Token } from '@/types';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface CurrencyBoxProps {
   mode: SwapMode;
@@ -38,6 +39,15 @@ const CurrencyBox = ({
     setOpen(false);
   };
 
+  const { isLoading: isTokenPriceLoading, tokenPriceInUSD } = useGetTokenUSDPrice(selectedToken);
+
+  const inputFiatValue = useMemo(() => {
+    return formatFiatPrice({
+      conversionRate: tokenPriceInUSD,
+      price: value ? parseFloat(value) : 0,
+    });
+  }, [tokenPriceInUSD, value]);
+
   return (
     <div className="w-115 rounded-lg bg-background p-4">
       <p className="mb-2 text-sm text-foreground/70 capitalize">{mode}</p>
@@ -53,7 +63,9 @@ const CurrencyBox = ({
             type="text"
             value={value}
           />
-          <p className="mt-1 text-sm text-foreground/50">$0</p>
+          {isTokenPriceLoading ?
+            <Skeleton className="skeleton mt-2 h-3 w-[20px] rounded-sm" />
+          : <p className="mt-1 text-sm text-foreground/50">{inputFiatValue}</p>}
         </div>
 
         <div className="flex flex-col items-end gap-2 self-baseline">
@@ -61,13 +73,13 @@ const CurrencyBox = ({
             <DialogOverlay />
             <DialogTrigger asChild>
               <Button
-                className="flex items-center gap-0.5 rounded-full"
+                className="flex items-center gap-0.5 rounded-full py-5"
                 variant={selectedToken ? 'outline' : 'secondary'}
               >
                 {selectedToken ?
                   <div className="flex items-center gap-2">
-                    <TokenLogo size={28} tokenSrc={selectedToken.logo} />
-                    <p className="text-[16px] font-extrabold">{selectedToken.symbol}</p>
+                    <TokenLogo size={30} tokenSrc={selectedToken.logo} />
+                    <p className="text-[20px] font-extrabold">{selectedToken.symbol}</p>
                   </div>
                 : <p className="text-sm font-medium">Select Token</p>}
                 <ChevronDown className="mt-1 size-4" />
