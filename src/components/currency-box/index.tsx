@@ -49,7 +49,7 @@ const CurrencyBox = ({
   }, [tokenPriceInUSD, value]);
 
   return (
-    <div className="w-115 rounded-lg bg-background p-4">
+    <div className="w-full rounded-lg bg-background p-4">
       <p className="mb-2 text-sm text-foreground/70 capitalize">{mode}</p>
 
       <div className="flex items-center justify-between gap-2">
@@ -79,7 +79,9 @@ const CurrencyBox = ({
                 {selectedToken ?
                   <div className="flex items-center gap-2">
                     <TokenLogo size={30} tokenSrc={selectedToken.logo} />
-                    <p className="text-[20px] font-extrabold">{selectedToken.symbol}</p>
+                    <p className="text-base font-extrabold md:text-[20px]">
+                      {selectedToken.symbol}
+                    </p>
                   </div>
                 : <p className="text-sm font-medium">Select Token</p>}
                 <ChevronDown className="mt-1 size-4" />

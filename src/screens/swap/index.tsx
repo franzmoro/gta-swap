@@ -115,7 +115,7 @@ const SwapWidget = () => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
 
   return (
-    <div className="mt-12 flex w-full max-w-2xl flex-col items-center justify-center gap-12">
+    <div className="mt-12 flex w-full max-w-2xl flex-col items-center justify-center gap-12 px-4">
       <h1 className="text-center text-5xl font-bold">GTA Swap</h1>
       <div className="flex w-full items-center justify-center">
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
