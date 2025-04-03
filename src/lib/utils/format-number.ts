@@ -362,11 +362,9 @@ export function formatNumber({
   if (hardCodedInputValue === undefined) {
     return placeholder;
   }
-  return (
-    (prefix ?? '') +
-    new Intl.NumberFormat(DEFAULT_LOCALE, formatterOptions).format(hardCodedInputValue) +
-    suffix
-  );
+  return `${prefix ?? ''}${new Intl.NumberFormat(DEFAULT_LOCALE, formatterOptions).format(
+    hardCodedInputValue
+  )} ${suffix}`;
 }
 
 export function formatNumberOrString({

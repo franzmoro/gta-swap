@@ -149,3 +149,32 @@
     }
   }
 }
+
+/* Prevent layout shift with scrollbar */
+html.smooth-scrollbar {
+  scrollbar-gutter: stable;
+}
+
+/* Custom scrollbar styling */
+html.smooth-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+html.smooth-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.smooth-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+}
+
+html.smooth-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 155, 155, 0.7);
+}
+
+/* Firefox scrollbar styling */
+html.smooth-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}

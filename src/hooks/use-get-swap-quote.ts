@@ -119,27 +119,10 @@ const useGetSwapQuote = ({
 
     return {
       amountOut: formatUnits(amountOut, outputToken.decimals),
-      amountOutRaw,
+      amountOutRaw: amountOut,
       error: null,
       status: isRefetching ? TradeState.REEFETCHING : TradeState.VALID,
     };
-
-    // if (isExactIn) {
-    //   const amountOut = buyToken.isPlatformToken ? TokenFeeMath.getTokenAfterTax(data[1]) : data[1];
-    //   return {
-    //     amountOut: formatUnits(amountOut, buyToken.decimals),
-    //     amountOutRaw: amountOut,
-    //     error: null,
-    //     status: TradeState.VALID,
-    //   };
-    // }
-    // const amountOut = sellToken.isPlatformToken ? TokenFeeMath.getTokenWithTax(data[0]) : data[0];
-    // return {
-    //   amountOut: formatUnits(amountOut, sellToken.decimals),
-    //   amountOutRaw: amountOut,
-    //   error: null,
-    //   status: TradeState.VALID,
-    // };
   }, [isRefetching, isLoading, amountInRaw, error, data, isExactIn, sellToken, buyToken]);
 };
 
