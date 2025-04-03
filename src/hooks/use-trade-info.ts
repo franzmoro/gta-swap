@@ -1,3 +1,4 @@
+import { useTokenPriceFromPool } from './use-get-token-price';
 import { slippageValueAtom } from '@/atom';
 import { GOATAI_TOKEN } from '@/constants/tokens';
 import { TokenFeeMath } from '@/lib/utils/token-fee-math';
@@ -32,12 +33,20 @@ const useTradeInfo = ({
   );
 
   const rate =
-    swapAmounts[SwapMode.BUY].rawValue ?
+    swapAmounts[SwapMode.SELL].rawValue ?
       parseFloat(swapAmounts[SwapMode.BUY].displayValue) /
       parseFloat(swapAmounts[SwapMode.SELL].displayValue)
     : 0;
 
+  const { tokenAPrice } = useTokenPriceFromPool(
+    selectedTokens[SwapMode.SELL],
+    selectedTokens[SwapMode.BUY]
+  );
+
+  const priceImpact = ((tokenAPrice - rate) / tokenAPrice) * 100;
+
   return {
+    priceImpact,
     rate,
     slippage,
     taxOnToken,

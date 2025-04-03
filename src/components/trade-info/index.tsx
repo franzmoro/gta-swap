@@ -36,7 +36,7 @@ const TradeInfoSection = ({
   selectedTokens,
   swapAmounts,
 }: TradeInfoSectionProps) => {
-  const { rate, slippage, taxOnToken, tradeFee } = useTradeInfo({
+  const { priceImpact, rate, slippage, taxOnToken, tradeFee } = useTradeInfo({
     selectedTokens,
     swapAmounts,
   });
@@ -78,7 +78,7 @@ const TradeInfoSection = ({
       <TransactionInfo
         label="Price impact"
         tooltipContent="The impact your trade has on the market price of this pool"
-        value="0.05%"
+        value={formatPercent(priceImpact)}
       />
       {isReviewModal && (
         <TransactionInfo

@@ -380,7 +380,10 @@ export function formatNumberOrString({
     return placeholder;
   }
   if (typeof input === 'string') {
-    return formatNumber({ conversionRate, input: parseFloat(input), placeholder, suffix, type });
+    if (!isNaN(parseFloat(input))) {
+      return formatNumber({ conversionRate, input: parseFloat(input), placeholder, suffix, type });
+    }
+    return placeholder;
   }
   return formatNumber({ conversionRate, input, placeholder, suffix, type });
 }

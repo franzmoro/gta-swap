@@ -15,8 +15,7 @@ import useSwapData from '@/hooks/use-swap-data';
 import { useAllTokenBalance } from '@/hooks/use-token-balance';
 import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import useWeb3React from '@/hooks/use-web3-react';
-import { NumberType } from '@/lib/utils/format-number';
-import { formatNumberOrString } from '@/lib/utils/format-number';
+import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { ArrowUpDown, Settings } from 'lucide-react';
 import { useState } from 'react';
@@ -57,7 +56,7 @@ const SwapRateDisplay = ({
   );
 
   const rate =
-    swapAmounts[SwapMode.BUY].rawValue ?
+    swapAmounts[SwapMode.SELL].rawValue ?
       parseFloat(swapAmounts[SwapMode.BUY].displayValue) /
       parseFloat(swapAmounts[SwapMode.SELL].displayValue)
     : 0;
@@ -93,12 +92,12 @@ const SwapRateDisplay = ({
 const SwapSection = ({
   isBaseSelected,
   isConnected,
-  setIsReviewModalOpen,
 }: {
   isBaseSelected: boolean;
   isConnected: boolean;
-  setIsReviewModalOpen: (open: boolean) => void;
 }) => {
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
+
   const {
     onClickMax,
     onSwitchToken,
@@ -145,7 +144,7 @@ const SwapSection = ({
       </div>
 
       <div className="flex flex-col gap-4">
-        {!isConnected || !isBaseSelected ?
+        {(!isConnected || !isBaseSelected) && !swapActionButtonState.isLoading ?
           <ConnectWalletButton size="lg" />
         : <Button
             className="w-full text-[20px] font-extrabold"
@@ -173,6 +172,14 @@ const SwapSection = ({
           </Accordion>
         </div>
       : null}
+
+      {/* Review modal */}
+      <SwapReviewModal
+        isOpen={isReviewModalOpen}
+        onOpenChange={setIsReviewModalOpen}
+        selectedTokens={selectedTokens}
+        swapAmounts={swapAmounts}
+      />
     </>
   );
 };
@@ -182,10 +189,8 @@ const SwapWidget = () => {
 
   useAllTokenBalance();
 
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
-
   return (
-    <div className="mt-12 flex w-full max-w-2xl flex-col items-center justify-center gap-12 px-4">
+    <div className="mt-12 flex w-full max-w-2xl flex-col items-center justify-center gap-12 px-4 pb-7">
       <h1 className="text-center text-5xl font-bold">GTA Swap</h1>
       <div className="flex w-full items-center justify-center">
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-6">
@@ -193,16 +198,9 @@ const SwapWidget = () => {
           <SwapHeader />
 
           {/* Card body */}
-          <SwapSection
-            isBaseSelected={isBaseSelected}
-            isConnected={isConnected}
-            setIsReviewModalOpen={setIsReviewModalOpen}
-          />
+          <SwapSection isBaseSelected={isBaseSelected} isConnected={isConnected} />
         </div>
       </div>
-
-      {/* Review modal */}
-      <SwapReviewModal isOpen={isReviewModalOpen} onOpenChange={setIsReviewModalOpen} />
     </div>
   );
 };

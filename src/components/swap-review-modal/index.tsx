@@ -8,16 +8,26 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { tokens } from '@/constants/tokens';
+import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
+import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
+import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { ArrowDown } from 'lucide-react';
+import { formatUnits } from 'viem';
 
 const SwapReviewModal = ({
   isOpen,
   onOpenChange,
+  selectedTokens,
+  swapAmounts,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  selectedTokens: SelectedTokens;
+  swapAmounts: SwapAmounts;
 }) => {
+  const { tokenPriceInUSD: sellTokenUSDPrice } = useGetTokenUSDPrice(selectedTokens[SwapMode.SELL]);
+  const { tokenPriceInUSD: buyTokenUSDPrice } = useGetTokenUSDPrice(selectedTokens[SwapMode.BUY]);
+
   return (
     <Dialog modal onOpenChange={onOpenChange} open={isOpen}>
       <DialogOverlay />
@@ -29,23 +39,53 @@ const SwapReviewModal = ({
         <div className="mt-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2">
-              <p className="text-2xl text-foreground">12.0 USDC</p>
-              <p className="text-sm text-foreground/60">$12.00</p>
+              <p className="text-2xl text-foreground">
+                {formatNumberOrString({
+                  input: formatUnits(
+                    swapAmounts[SwapMode.SELL].rawValue,
+                    selectedTokens[SwapMode.SELL].decimals
+                  ),
+                  suffix: selectedTokens[SwapMode.SELL].symbol,
+                  type: NumberType.TokenTx,
+                })}
+              </p>
+              <p className="text-sm text-foreground/60">
+                {formatNumberOrString({
+                  conversionRate: sellTokenUSDPrice,
+                  input: swapAmounts[SwapMode.SELL].displayValue,
+                  type: NumberType.FiatTokenPrice,
+                })}
+              </p>
             </div>
-            <TokenLogo tokenSrc={tokens[2].logo} />
+            <TokenLogo tokenSrc={selectedTokens[SwapMode.SELL].logo} />
           </div>
           <ArrowDown className="size-6 text-foreground/80" />
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2">
-              <p className="text-2xl text-foreground">0.00629 ETH</p>
-              <p className="text-sm text-foreground/60">$11.71</p>
+              <p className="text-2xl text-foreground">
+                {formatNumberOrString({
+                  input: formatUnits(
+                    swapAmounts[SwapMode.BUY].rawValue,
+                    selectedTokens[SwapMode.BUY].decimals
+                  ),
+                  suffix: selectedTokens[SwapMode.BUY].symbol,
+                  type: NumberType.TokenTx,
+                })}
+              </p>
+              <p className="text-sm text-foreground/60">
+                {formatNumberOrString({
+                  conversionRate: buyTokenUSDPrice,
+                  input: swapAmounts[SwapMode.BUY].displayValue,
+                  type: NumberType.FiatTokenPrice,
+                })}
+              </p>
             </div>
-            <TokenLogo tokenSrc={tokens[0].logo} />
+            <TokenLogo tokenSrc={selectedTokens[SwapMode.BUY].logo} />
           </div>
         </div>
 
         <hr className="my-4" />
-        <TradeInfoSection isReviewModal />
+        <TradeInfoSection isReviewModal selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
 
         <Button className="w-full text-lg" size="lg">
           Swap

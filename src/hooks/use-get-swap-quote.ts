@@ -96,8 +96,6 @@ const useGetSwapQuote = ({
   });
 
   return useMemo(() => {
-    if (isRefetching)
-      return { amountOut: null, amountOutRaw: 0n, error: null, status: TradeState.REEFETCHING };
     if (isLoading)
       return { amountOut: null, amountOutRaw: 0n, error: null, status: TradeState.LOADING };
     if (!amountInRaw)
@@ -123,7 +121,7 @@ const useGetSwapQuote = ({
       amountOut: formatUnits(amountOut, outputToken.decimals),
       amountOutRaw,
       error: null,
-      status: TradeState.VALID,
+      status: isRefetching ? TradeState.REEFETCHING : TradeState.VALID,
     };
 
     // if (isExactIn) {

@@ -121,30 +121,36 @@ const useSwapData = () => {
     if (status === TradeState.LOADING || status === TradeState.REEFETCHING)
       return {
         disabled: true,
+        isLoading: true,
         label: 'Finalizing quote...',
       };
     if (status === TradeState.INVALID && error)
       return {
         disabled: true,
+        isLoading: false,
         label: error,
       };
     if (!sellToken || !buyToken)
       return {
         disabled: true,
+        isLoading: false,
         label: 'Select a token',
       };
-    if (!swapAmounts[SwapMode.SELL] || !swapAmounts[SwapMode.BUY])
+    if (!swapAmounts[SwapMode.SELL].rawValue || !swapAmounts[SwapMode.BUY].rawValue)
       return {
         disabled: true,
+        isLoading: false,
         label: 'Enter an amount',
       };
     if (swapAmounts[SwapMode.SELL].rawValue > (maxUsableSellBalance ?? BigInt(0)))
       return {
         disabled: true,
+        isLoading: false,
         label: `Insufficient ${sellToken?.symbol}`,
       };
     return {
       disabled: false,
+      isLoading: false,
       label: 'Review',
     };
   }, [status, error, sellToken, buyToken, swapAmounts, maxUsableSellBalance]);
