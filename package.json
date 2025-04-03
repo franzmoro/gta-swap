@@ -10,7 +10,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
@@ -45,6 +48,7 @@
     "@typescript-eslint/parser": "^8.28.0",
     "@typescript-eslint/types": "^8.28.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^1.6.0",
     "eslint": "^9.23.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -58,6 +62,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "jsdom": "^24.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^3.5.3",
@@ -69,7 +74,8 @@
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-plugin-notifier": "^0.1.5",
     "vite-plugin-svgr": "^4.3.0",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^1.6.1"
   },
   "packageManager": "pnpm@9.3.0+sha1.d4f1da7af76dbdb4ab1a08f6b5add602ffad6fd4"
 }
