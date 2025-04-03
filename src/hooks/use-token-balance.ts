@@ -32,7 +32,7 @@ const getBalanceToken = async (address: string, token: string) => {
   return balance;
 };
 
-const useTokenBalance = (token: null | Token) => {
+const useTokenBalance = (token: Token) => {
   const { address } = useWeb3React();
 
   const { data, isError, isLoading } = useWalletBalance({

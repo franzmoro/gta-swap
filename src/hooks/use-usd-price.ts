@@ -1,5 +1,10 @@
 import { V2_PAIR_ABI } from '@/abis/V2Pair';
-import { GOATAI_ERC20, GOATAI_WETH_POOL, USDC_ERC20, USDC_WETH_POOL } from '@/constants/address';
+import {
+  GOATAI_ERC20_CONTRACT_ADDRESS,
+  GOATAI_WETH_POOL_CONTRACT_ADDRESS,
+  USDC_ERC20_CONTRACT_ADDRESS,
+  USDC_WETH_POOL_CONTRACT_ADDRESS,
+} from '@/constants/address';
 import { COINGECKO_ETH_PRICE_API_URL } from '@/constants/index';
 import { NATIVE_TOKEN } from '@/constants/tokens';
 import { Token } from '@/types';
@@ -9,8 +14,8 @@ import { formatUnits } from 'viem';
 import { useReadContract } from 'wagmi';
 
 const TOKEN_PAIR_MAP = {
-  [GOATAI_ERC20]: GOATAI_WETH_POOL,
-  [USDC_ERC20]: USDC_WETH_POOL,
+  [GOATAI_ERC20_CONTRACT_ADDRESS]: GOATAI_WETH_POOL_CONTRACT_ADDRESS,
+  [USDC_ERC20_CONTRACT_ADDRESS]: USDC_WETH_POOL_CONTRACT_ADDRESS,
 } as const;
 
 async function getETHPrice(): Promise<number> {
@@ -24,7 +29,7 @@ async function getETHPrice(): Promise<number> {
   }
 }
 
-export const useGetTokenUSDPrice = (token: null | Token) => {
+export const useGetTokenUSDPrice = (token: Token) => {
   const pairAddress =
     token ? TOKEN_PAIR_MAP[token.address as keyof typeof TOKEN_PAIR_MAP] : undefined;
 

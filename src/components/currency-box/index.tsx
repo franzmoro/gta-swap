@@ -18,7 +18,7 @@ interface CurrencyBoxProps {
   onChange: (value: string) => void;
   onClickMax?: () => void;
   onSelectToken: (token: Token, mode: SwapMode) => void;
-  selectedToken: null | Token;
+  selectedToken: Token;
   value: string;
 }
 

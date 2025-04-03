@@ -1,5 +1,5 @@
-import InfoButton from '../tooltip';
 import { TokenLogo } from '@/components/token-logo';
+import TradeInfoSection from '@/components/trade-info';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -10,26 +10,6 @@ import {
 } from '@/components/ui/dialog';
 import { tokens } from '@/constants/tokens';
 import { ArrowDown } from 'lucide-react';
-
-const TransactionInfo = ({
-  label,
-  tooltipContent,
-  value,
-}: {
-  label: string;
-  tooltipContent?: string;
-  value: string;
-}) => {
-  return (
-    <div className="flex justify-between">
-      <div className="flex items-center gap-1">
-        <p className="text-sm text-foreground/60">{label}</p>
-        {tooltipContent && <InfoButton content={tooltipContent} />}
-      </div>
-      <p className="text-sm text-foreground/80">{value}</p>
-    </div>
-  );
-};
 
 const SwapReviewModal = ({
   isOpen,
@@ -65,29 +45,7 @@ const SwapReviewModal = ({
         </div>
 
         <hr className="my-4" />
-        <div className="flex flex-col gap-3">
-          <TransactionInfo
-            label="Tax (10 %)"
-            tooltipContent="Your transaction will revert if the price changes more than the slippage percentage."
-            value="1 USDC"
-          />
-          <TransactionInfo
-            label="Network cost"
-            tooltipContent="This is the cost of the transaction on the network."
-            value="0.001 ETH"
-          />
-          <TransactionInfo label="Rate" value="1 ETH = 1901.62 USDT ($1,851.02)" />
-          <TransactionInfo
-            label="Max. slippage"
-            tooltipContent="Your transaction will revert if the price slips more than the slippage percentage."
-            value="10%"
-          />
-          <TransactionInfo
-            label="Price impact"
-            tooltipContent="The impact your trade has on the market price of this pool"
-            value="0.05%"
-          />
-        </div>
+        <TradeInfoSection isReviewModal />
 
         <Button className="w-full text-lg" size="lg">
           Swap

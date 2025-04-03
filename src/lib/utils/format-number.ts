@@ -217,11 +217,6 @@ const fiatGasPriceFormatter: FormatterRule[] = [
   { formatterOptions: SHORTHAND_CURRENCY_TWO_DECIMALS, upperBound: Infinity },
 ];
 
-const portfolioBalanceFormatter: FormatterRule[] = [
-  { exact: 0, formatterOptions: TWO_DECIMALS_CURRENCY },
-  { formatterOptions: TWO_DECIMALS_CURRENCY, upperBound: Infinity },
-];
-
 const wholeNumberFormatter: FormatterRule[] = [
   { formatterOptions: NO_DECIMALS, upperBound: Infinity },
 ];
@@ -232,9 +227,6 @@ export enum NumberType {
 
   // fiat prices everywhere except Token Details flow
   FiatTokenPrice = 'fiat-token-price',
-
-  // portfolio balance
-  PortfolioBalance = 'portfolio-balance',
 
   SwapDetailsAmount = 'swap-details-amount',
 
@@ -260,7 +252,6 @@ type FormatterType = FormatterRule[] | NumberType;
 const TYPE_TO_FORMATTER_RULES = {
   [NumberType.FiatGasPrice]: fiatGasPriceFormatter,
   [NumberType.FiatTokenPrice]: fiatTokenPricesFormatter,
-  [NumberType.PortfolioBalance]: portfolioBalanceFormatter,
   [NumberType.SwapDetailsAmount]: swapDetailsAmountFormatter,
   [NumberType.SwapPrice]: swapPriceFormatter,
   [NumberType.SwapTradeAmount]: swapTradeAmountFormatter,

@@ -1,104 +1,80 @@
+import useGetSwapQuote, { TradeState } from './use-get-swap-quote';
 import useMaxBalance from './use-max-token-balance';
 import useTokenBalance from './use-token-balance';
-import { NATIVE_TOKEN } from '@/constants/tokens';
+import { GOATAI_TOKEN, NATIVE_TOKEN } from '@/constants/tokens';
 import { sanitizeNumber } from '@/lib/utils';
 import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
-import { SwapMode, Token } from '@/types';
+import { SelectedTokens, SwapAmounts, SwapMode, Token } from '@/types';
 import { useMemo, useState } from 'react';
-import { formatEther } from 'viem/utils';
-
-type SwapState = {
-  [SwapMode.BUY]: {
-    amount: string;
-    token: null | Token;
-  };
-  [SwapMode.SELL]: {
-    amount: string;
-    token: null | Token;
-  };
-};
-
-// TODO: implement chain static call
-const getExactOutOnSwapInput = (amount: string) => {
-  const sanitizedNumeric = parseFloat(sanitizeNumber(amount));
-  if (!amount || !sanitizedNumeric) return undefined;
-  return (sanitizedNumeric * 145.56).toString();
-};
-
-const getExactInOnSwapInput = (amount: string) => {
-  const sanitizedNumeric = parseFloat(sanitizeNumber(amount));
-  if (!amount || !sanitizedNumeric) return undefined;
-  return (sanitizedNumeric / 145.56).toString();
-};
+import { formatEther, parseUnits } from 'viem/utils';
 
 const useSwapData = () => {
-  const [swapUserInputState, setSwapUserInputState] = useState<SwapState>({
-    [SwapMode.BUY]: {
-      amount: '',
-      token: null,
-    },
-    [SwapMode.SELL]: {
-      amount: '',
-      token: NATIVE_TOKEN,
-    },
+  const [swapUserInputAmount, setSwapUserInputAmount] = useState<string>('');
+  const [selectedTokens, setSelectedTokens] = useState<SelectedTokens>({
+    [SwapMode.BUY]: NATIVE_TOKEN,
+    [SwapMode.SELL]: GOATAI_TOKEN,
   });
 
-  const [sellToken, buyToken] = [
-    swapUserInputState[SwapMode.SELL].token,
-    swapUserInputState[SwapMode.BUY].token,
-  ];
+  const [sellToken, buyToken] = [selectedTokens[SwapMode.SELL], selectedTokens[SwapMode.BUY]];
 
   const { balance: sellTokenBalance } = useTokenBalance(sellToken);
 
-  const maxUsableSellBalance = useMaxBalance(sellTokenBalance?.value, sellToken?.isNative);
+  const maxUsableSellBalance = useMaxBalance(sellTokenBalance?.value, sellToken.isNative);
 
   const [currentInputContext, setCurrentInputContext] = useState<SwapMode>(SwapMode.SELL);
-  const [currentTokenSelectionContext, setCurrentTokenSelectionContext] = useState<SwapMode>(
-    SwapMode.SELL
-  );
+
+  const { amountOut, amountOutRaw, error, status } = useGetSwapQuote({
+    amountIn: swapUserInputAmount,
+    buyToken,
+    sellToken,
+    swapInputContext: currentInputContext,
+  });
 
   // Calculate the amount of tokens to swap everytime user input is changed or context is changed
-  const [swapAmountIn, swapAmountOut] = useMemo(() => {
+  const swapAmounts: SwapAmounts = useMemo(() => {
     if (currentInputContext === SwapMode.SELL) {
-      const amountOut = getExactOutOnSwapInput(swapUserInputState[SwapMode.SELL].amount);
-      return [
-        swapUserInputState[SwapMode.SELL].amount,
-        formatNumberOrString({
-          input: buyToken ? amountOut : undefined,
+      return {
+        [SwapMode.BUY]: {
+          displayValue: formatNumberOrString({
+            input: amountOut ?? undefined,
+            placeholder: '',
+            type: NumberType.SwapTradeAmount,
+          }),
+          rawValue: amountOutRaw,
+        },
+        [SwapMode.SELL]: {
+          displayValue: swapUserInputAmount,
+          rawValue: parseUnits(swapUserInputAmount, sellToken.decimals),
+        },
+      };
+    }
+
+    return {
+      [SwapMode.BUY]: {
+        displayValue: swapUserInputAmount,
+        rawValue: parseUnits(swapUserInputAmount, buyToken.decimals),
+      },
+      [SwapMode.SELL]: {
+        displayValue: formatNumberOrString({
+          input: amountOut ?? undefined,
           placeholder: '',
           type: NumberType.SwapTradeAmount,
         }),
-      ];
-    }
-
-    const amountIn = getExactInOnSwapInput(swapUserInputState[SwapMode.BUY].amount);
-    return [
-      formatNumberOrString({
-        input: sellToken ? amountIn : undefined,
-        placeholder: '',
-        type: NumberType.SwapTradeAmount,
-      }),
-      swapUserInputState[SwapMode.BUY].amount,
-    ];
-  }, [currentInputContext, buyToken, sellToken, swapUserInputState]);
+        rawValue: amountOutRaw,
+      },
+    };
+  }, [currentInputContext, swapUserInputAmount, amountOut, amountOutRaw, buyToken, sellToken]);
 
   /** Actions */
   const onClickMax = () => {
-    setSwapUserInputState((prev) => ({
-      ...prev,
-      [SwapMode.SELL]: {
-        ...prev[SwapMode.SELL],
-        amount: formatEther(maxUsableSellBalance ?? BigInt(0)),
-      },
-    }));
+    setCurrentInputContext(SwapMode.SELL);
+    setSwapUserInputAmount(formatEther(maxUsableSellBalance ?? BigInt(0)));
   };
 
   const onTokenSelect = (token: Token, mode: SwapMode) => {
-    setCurrentTokenSelectionContext(mode);
-
     // Logic to avoid selecting the same token for buy and sell
     const [token0, token1] = [sellToken, buyToken];
-    let updatedTokens: (null | Token)[] = [token0, token1];
+    let updatedTokens: Token[] = [token0, token1];
 
     if (mode === SwapMode.SELL) {
       const newBuyToken =
@@ -111,58 +87,58 @@ const useSwapData = () => {
       updatedTokens = [newSellToken, token];
     }
 
-    setSwapUserInputState((prev) => ({
-      ...prev,
-      [SwapMode.BUY]: {
-        ...prev[SwapMode.BUY],
-        token: updatedTokens[1],
-      },
-      [SwapMode.SELL]: {
-        ...prev[SwapMode.SELL],
-        token: updatedTokens[0],
-      },
-    }));
+    setSelectedTokens({
+      [SwapMode.BUY]: updatedTokens[1],
+      [SwapMode.SELL]: updatedTokens[0],
+    });
   };
 
   const onUserInput = (amount: string, mode: SwapMode) => {
-    const token = swapUserInputState[mode].token;
-    const sanitizedAmount = sanitizeNumber(amount, token?.decimals);
+    const token = selectedTokens[mode];
+    const sanitizedAmount = sanitizeNumber(amount, token.decimals);
 
     setCurrentInputContext(mode);
-    setSwapUserInputState((prev) => ({
-      ...prev,
-      [mode]: { ...prev[mode], amount: sanitizedAmount },
-    }));
+    setSwapUserInputAmount(sanitizedAmount);
   };
 
   const onSwitchToken = () => {
-    setSwapUserInputState((prev) => ({
-      ...prev,
-      [SwapMode.BUY]: prev[SwapMode.SELL],
-      [SwapMode.SELL]: prev[SwapMode.BUY],
-    }));
+    setSelectedTokens({
+      [SwapMode.BUY]: selectedTokens[SwapMode.SELL],
+      [SwapMode.SELL]: selectedTokens[SwapMode.BUY],
+    });
     setCurrentInputContext((prev) => (prev === SwapMode.SELL ? SwapMode.BUY : SwapMode.SELL));
   };
 
   /**
-   * 1. Token is not selected
-   * 2. Amount is not entered
-   * 3. Amount is greater than balance
-   *
+   * Swap action button state
+   * 1. Loading
+   * 2. Token is not selected
+   * 3. Amount is not entered
+   * 4. Amount is greater than balance
    */
 
   const swapActionButtonState = useMemo(() => {
+    if (status === TradeState.LOADING || status === TradeState.REEFETCHING)
+      return {
+        disabled: true,
+        label: 'Finalizing quote...',
+      };
+    if (status === TradeState.INVALID && error)
+      return {
+        disabled: true,
+        label: error,
+      };
     if (!sellToken || !buyToken)
       return {
         disabled: true,
         label: 'Select a token',
       };
-    if (!swapAmountIn || !swapAmountOut)
+    if (!swapAmounts[SwapMode.SELL] || !swapAmounts[SwapMode.BUY])
       return {
         disabled: true,
         label: 'Enter an amount',
       };
-    if (swapAmountIn > formatEther(maxUsableSellBalance ?? BigInt(0)))
+    if (swapAmounts[SwapMode.SELL].rawValue > (maxUsableSellBalance ?? BigInt(0)))
       return {
         disabled: true,
         label: `Insufficient ${sellToken?.symbol}`,
@@ -171,19 +147,16 @@ const useSwapData = () => {
       disabled: false,
       label: 'Review',
     };
-  }, [swapAmountIn, swapAmountOut, maxUsableSellBalance, sellToken, buyToken]);
+  }, [status, error, sellToken, buyToken, swapAmounts, maxUsableSellBalance]);
 
   return {
     onClickMax,
     onSwitchToken,
     onTokenSelect,
     onUserInput,
+    selectedTokens,
     swapActionButtonState,
-    swapAmounts: {
-      in: swapAmountIn,
-      out: swapAmountOut,
-    },
-    swapState: swapUserInputState,
+    swapAmounts,
   };
 };
 
