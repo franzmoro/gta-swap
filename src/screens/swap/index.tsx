@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
+import { tokens } from '@/constants/tokens';
 import useSwapData from '@/hooks/use-swap-data';
 import { useAllTokenBalance } from '@/hooks/use-token-balance';
 import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
@@ -108,11 +109,30 @@ const SwapSection = ({
     swapAmounts,
   } = useSwapData();
 
+  const notAllowedBuyTokenForSelection =
+    selectedTokens[SwapMode.SELL].isPlatformToken ?
+      []
+    : tokens.filter(
+        (token) =>
+          !token.isPlatformToken &&
+          token.address.toLowerCase() !== selectedTokens[SwapMode.SELL].address.toLowerCase()
+      );
+
+  const notAllowedSellTokenForSelection =
+    selectedTokens[SwapMode.BUY].isPlatformToken ?
+      []
+    : tokens.filter(
+        (token) =>
+          !token.isPlatformToken &&
+          token.address.toLowerCase() !== selectedTokens[SwapMode.BUY].address.toLowerCase()
+      );
+
   return (
     <>
       <div className="flex flex-col items-center gap-4">
         <CurrencyBox
           mode={SwapMode.SELL}
+          notAllowedTokens={notAllowedSellTokenForSelection}
           onChange={(value) => {
             onUserInput(value, SwapMode.SELL);
           }}
@@ -134,6 +154,7 @@ const SwapSection = ({
         </div>
         <CurrencyBox
           mode={SwapMode.BUY}
+          notAllowedTokens={notAllowedBuyTokenForSelection}
           onChange={(value) => {
             onUserInput(value, SwapMode.BUY);
           }}

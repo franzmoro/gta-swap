@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react';
 
 interface CurrencyBoxProps {
   mode: SwapMode;
+  notAllowedTokens?: Token[];
   onChange: (value: string) => void;
   onClickMax?: () => void;
   onSelectToken: (token: Token, mode: SwapMode) => void;
@@ -24,6 +25,7 @@ interface CurrencyBoxProps {
 
 const CurrencyBox = ({
   mode,
+  notAllowedTokens,
   onChange,
   onClickMax,
   onSelectToken,
@@ -88,7 +90,10 @@ const CurrencyBox = ({
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
-              <TokenSelectModalContent onSelectToken={onTokenSelect} />
+              <TokenSelectModalContent
+                disabledTokens={notAllowedTokens}
+                onSelectToken={onTokenSelect}
+              />
             </DialogContent>
           </Dialog>
 
