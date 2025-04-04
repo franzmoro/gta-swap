@@ -37,7 +37,7 @@ export default [
     languageOptions: {
       parser: typescriptEslintParser,
       parserOptions: {
-        project: ['./tsconfig.app.json'],
+        project: ['./tsconfig.app.json', './tsconfig.test.json'],
       },
     },
     plugins: {
