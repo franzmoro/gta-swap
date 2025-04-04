@@ -26,5 +26,19 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.stories.tsx", "src/**/*.stories.mdx", ".storybook/*", "src"]
+  "include": ["src/**/*.stories.tsx", "src/**/*.stories.mdx", ".storybook/*", "src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/**/*.test.js",
+    "src/**/*.test.jsx",
+    "src/**/*.spec.js",
+    "src/**/*.spec.jsx"
+  ]
 }
