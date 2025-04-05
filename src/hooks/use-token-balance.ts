@@ -4,7 +4,7 @@ import { client } from '@/adapters/thirdweb';
 import { BASE_CHAIN_CONFIG } from '@/constants/config';
 import { tokens } from '@/constants/tokens';
 import { Token } from '@/types';
-import { useQueries } from '@tanstack/react-query';
+import { skipToken, useQueries, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { getContract } from 'thirdweb';
 import { getBalance } from 'thirdweb/extensions/erc20';
@@ -15,7 +15,7 @@ export type TokenBalance = {
   value: bigint;
 };
 
-const getBalanceToken = async (address: string, token: string) => {
+const getTokenBalance = async (address: string, token: string) => {
   if (!address) return;
   const contract = getContract({
     abi: ERC20_ABI,
@@ -32,20 +32,35 @@ const getBalanceToken = async (address: string, token: string) => {
   return balance;
 };
 
-const useTokenBalance = (token: Token) => {
+export const useGetEthBalance = () => {
   const { address } = useWeb3React();
 
-  const { data, isError, isLoading } = useWalletBalance({
+  return useWalletBalance({
     address,
     chain: BASE_CHAIN_CONFIG,
     client: client,
-    tokenAddress: token?.isNative ? undefined : token?.address,
+  });
+};
+
+const useTokenBalance = (token: Token) => {
+  const { address } = useWeb3React();
+
+  const {
+    data: ethBalance,
+    isLoading: isEthBalanceLoading,
+    refetch: refetchEthBalance,
+  } = useGetEthBalance();
+
+  const { data, isLoading, refetch } = useQuery({
+    queryFn: !token.isNative && address ? () => getTokenBalance(address, token.address) : skipToken,
+    queryKey: ['token-balance', token.address, address],
   });
 
   return {
-    balance: data,
-    isError,
-    isLoading,
+    balance: token.isNative ? ethBalance : data,
+    isLoading: isEthBalanceLoading || isLoading,
+    refetch: token.isNative ? refetchEthBalance : refetch,
+    refetchEthBalance,
   };
 };
 
@@ -54,11 +69,7 @@ export default useTokenBalance;
 export const useAllTokenBalance = () => {
   const { address } = useWeb3React();
 
-  const { data, isError, isLoading } = useWalletBalance({
-    address,
-    chain: BASE_CHAIN_CONFIG,
-    client: client,
-  });
+  const { data, isError, isLoading } = useGetEthBalance();
 
   const {
     data: allTokenBalance,
@@ -77,7 +88,7 @@ export const useAllTokenBalance = () => {
         tokens
           .filter((token) => !token.isNative)
           .map((token) => ({
-            queryFn: () => getBalanceToken(address, token.address),
+            queryFn: () => getTokenBalance(address, token.address),
             queryKey: ['token-balance', token.address, address],
           }))
       : [],

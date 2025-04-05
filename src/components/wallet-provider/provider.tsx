@@ -1,6 +1,8 @@
 import { client } from '@/adapters/thirdweb';
 import { config } from '@/adapters/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { hashFn } from '@wagmi/core/query';
 import { type ReactNode } from 'react';
 import { useEffect } from 'react';
 import { viemAdapter } from 'thirdweb/adapters/viem';
@@ -58,12 +60,19 @@ export const Updater = () => {
 };
 
 export const Providers = (props: { children: ReactNode }) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        queryKeyHashFn: hashFn,
+      },
+    },
+  });
 
   return (
     <ThirdwebProvider>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools client={queryClient} />
           <Updater />
           {props.children}
         </QueryClientProvider>

@@ -17,6 +17,7 @@ type GetSwapQuoteProps = {
   amountIn: string;
   buyToken: Token;
   sellToken: Token;
+  shouldRefetch?: boolean;
   swapInputContext: SwapMode;
 };
 
@@ -60,6 +61,7 @@ const useGetSwapQuote = ({
   amountIn,
   buyToken,
   sellToken,
+  shouldRefetch = true,
   swapInputContext,
 }: GetSwapQuoteProps) => {
   /**
@@ -91,7 +93,7 @@ const useGetSwapQuote = ({
     functionName,
     query: {
       enabled: !!amountInRaw,
-      refetchInterval: 15 * 1000,
+      refetchInterval: shouldRefetch ? 15 * 1000 : undefined,
     },
   });
 

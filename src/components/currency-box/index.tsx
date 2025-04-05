@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import useTokenBalance from '@/hooks/use-token-balance';
 import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import useWeb3React from '@/hooks/use-web3-react';
+import { cn } from '@/lib/utils';
 import { formatFiatPrice, NumberType } from '@/lib/utils/format-number';
 import { formatNumberOrString } from '@/lib/utils/format-number';
 import { SwapMode, Token } from '@/types';
@@ -14,6 +15,7 @@ import { ChevronDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 interface CurrencyBoxProps {
+  disabled?: boolean;
   mode: SwapMode;
   notAllowedTokens?: Token[];
   onChange: (value: string) => void;
@@ -24,6 +26,7 @@ interface CurrencyBoxProps {
 }
 
 const CurrencyBox = ({
+  disabled,
   mode,
   notAllowedTokens,
   onChange,
@@ -51,13 +54,19 @@ const CurrencyBox = ({
   }, [tokenPriceInUSD, value]);
 
   return (
-    <div className="w-full rounded-lg bg-background p-4">
+    <div
+      className={cn(
+        'w-full rounded-lg bg-background p-4',
+        disabled && 'pointer-events-none opacity-80'
+      )}
+    >
       <p className="mb-2 text-sm text-foreground/70 capitalize">{mode}</p>
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1">
           <Input
             className="border-none bg-transparent p-0 !text-3xl font-semibold text-foreground shadow-none ring-0 ring-offset-0 outline-none hover:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            disabled={disabled}
             inputMode="decimal"
             onChange={(e) => onChange(e.target.value)}
             pattern="^[0-9]*[.,]?[0-9]*$"

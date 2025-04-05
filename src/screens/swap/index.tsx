@@ -97,14 +97,16 @@ const SwapSection = ({
   isBaseSelected: boolean;
   isConnected: boolean;
 }) => {
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
-
   const {
+    isReviewModalOpen,
+    isSwapPending,
     onClickMax,
     onSwitchToken,
     onTokenSelect,
     onUserInput,
     selectedTokens,
+    setIsReviewModalOpen,
+    swap,
     swapActionButtonState,
     swapAmounts,
   } = useSwapData();
@@ -131,6 +133,7 @@ const SwapSection = ({
     <>
       <div className="flex flex-col items-center gap-4">
         <CurrencyBox
+          disabled={isSwapPending}
           mode={SwapMode.SELL}
           notAllowedTokens={notAllowedSellTokenForSelection}
           onChange={(value) => {
@@ -153,6 +156,7 @@ const SwapSection = ({
           </Button>
         </div>
         <CurrencyBox
+          disabled={isSwapPending}
           mode={SwapMode.BUY}
           notAllowedTokens={notAllowedBuyTokenForSelection}
           onChange={(value) => {
@@ -198,7 +202,9 @@ const SwapSection = ({
       <SwapReviewModal
         isOpen={isReviewModalOpen}
         onOpenChange={setIsReviewModalOpen}
+        onSwap={swap}
         selectedTokens={selectedTokens}
+        swapActionButtonState={swapActionButtonState}
         swapAmounts={swapAmounts}
       />
     </>

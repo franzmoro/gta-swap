@@ -37,6 +37,7 @@ export const useGetTokenUSDPrice = (token: Token) => {
     queryFn: getETHPrice,
     queryKey: ['ethPrice'],
     refetchInterval: 15 * 1000,
+    refetchOnMount: false,
     staleTime: Infinity,
   });
 
@@ -47,6 +48,7 @@ export const useGetTokenUSDPrice = (token: Token) => {
     functionName: 'getReserves',
     query: {
       enabled: !!pairAddress,
+      refetchOnMount: false,
     },
   });
 
@@ -57,6 +59,7 @@ export const useGetTokenUSDPrice = (token: Token) => {
     functionName: 'token0',
     query: {
       enabled: !!pairAddress,
+      refetchOnMount: false,
     },
   });
 

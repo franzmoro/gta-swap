@@ -1,10 +1,16 @@
-import { transactionSettings, updateSlippageAtom, updateTransactionDeadlineAtom } from '@/atom';
+import {
+  slippageValueAtom,
+  transactionSettings,
+  updateSlippageAtom,
+  updateTransactionDeadlineAtom,
+} from '@/atom';
 import { AUTO_SLIPPAGE_VALUE } from '@/constants/config';
 import { Slippage } from '@/types';
 import { useAtom, useAtomValue } from 'jotai';
 
 const useTransactionSettings = () => {
   const { slippage, transactionDeadline } = useAtomValue(transactionSettings);
+  const slippageFormatted = useAtomValue(slippageValueAtom);
 
   const [, updateSlippage] = useAtom(updateSlippageAtom);
   const [, updateTransactionDeadline] = useAtom(updateTransactionDeadlineAtom);
@@ -24,6 +30,7 @@ const useTransactionSettings = () => {
     onUpdateSlippage,
     onUpdateTransactionDeadline,
     slippage,
+    slippageFormatted,
     transactionDeadline,
   };
 };

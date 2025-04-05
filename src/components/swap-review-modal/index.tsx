@@ -11,18 +11,26 @@ import {
 import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, Loader2 } from 'lucide-react';
 import { formatUnits } from 'viem';
 
 const SwapReviewModal = ({
   isOpen,
   onOpenChange,
+  onSwap,
   selectedTokens,
+  swapActionButtonState,
   swapAmounts,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onSwap: (amounts: SwapAmounts) => void;
   selectedTokens: SelectedTokens;
+  swapActionButtonState: {
+    disabled: boolean;
+    isLoading: boolean;
+    label: string;
+  };
   swapAmounts: SwapAmounts;
 }) => {
   const { tokenPriceInUSD: sellTokenUSDPrice } = useGetTokenUSDPrice(selectedTokens[SwapMode.SELL]);
@@ -87,8 +95,18 @@ const SwapReviewModal = ({
         <hr className="my-4" />
         <TradeInfoSection isReviewModal selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
 
-        <Button className="w-full text-lg" size="lg">
-          Swap
+        <Button
+          className="w-full text-lg"
+          disabled={swapActionButtonState.isLoading}
+          onClick={() => onSwap(swapAmounts)}
+          size="lg"
+        >
+          {swapActionButtonState.isLoading ?
+            <>
+              <Loader2 className="size-xl animate-spin" />
+              {swapActionButtonState.label}
+            </>
+          : 'Swap'}
         </Button>
       </DialogContent>
     </Dialog>

@@ -1,32 +1,48 @@
 import useGetSwapQuote, { TradeState } from './use-get-swap-quote';
 import useMaxBalance from './use-max-token-balance';
+import { useSwap } from './use-swap';
 import useTokenBalance from './use-token-balance';
 import { GOATAI_TOKEN, NATIVE_TOKEN } from '@/constants/tokens';
 import { sanitizeNumber } from '@/lib/utils';
 import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode, Token } from '@/types';
-import { useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo, useState } from 'react';
 import { formatEther, parseUnits } from 'viem/utils';
 
 const useSwapData = () => {
+  const queryClient = useQueryClient();
   const [swapUserInputAmount, setSwapUserInputAmount] = useState<string>('');
   const [selectedTokens, setSelectedTokens] = useState<SelectedTokens>({
     [SwapMode.BUY]: NATIVE_TOKEN,
     [SwapMode.SELL]: GOATAI_TOKEN,
   });
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
 
   const [sellToken, buyToken] = [selectedTokens[SwapMode.SELL], selectedTokens[SwapMode.BUY]];
 
-  const { balance: sellTokenBalance } = useTokenBalance(sellToken);
+  const { balance: sellTokenBalance, refetchEthBalance } = useTokenBalance(sellToken);
 
   const maxUsableSellBalance = useMaxBalance(sellTokenBalance?.value, sellToken.isNative);
 
   const [currentInputContext, setCurrentInputContext] = useState<SwapMode>(SwapMode.SELL);
 
+  const refetchDataOnSuccess = useCallback(() => {
+    // refetch token balance
+    queryClient.invalidateQueries({ queryKey: ['token-balance'] });
+    // fetch eth balance
+    refetchEthBalance();
+    //  read contracts: getReserves
+    queryClient.invalidateQueries({ queryKey: ['readContract', { functionName: 'getReserves' }] });
+  }, [queryClient, refetchEthBalance]);
+
+  const { isApprovePending, isSwapPending, swap } = useSwap(selectedTokens, refetchDataOnSuccess);
+
   const { amountOut, amountOutRaw, error, status } = useGetSwapQuote({
     amountIn: swapUserInputAmount,
     buyToken,
     sellToken,
+    shouldRefetch: !isReviewModalOpen && !isSwapPending,
     swapInputContext: currentInputContext,
   });
 
@@ -118,6 +134,19 @@ const useSwapData = () => {
    */
 
   const swapActionButtonState = useMemo(() => {
+    if (isApprovePending) {
+      return {
+        disabled: true,
+        isLoading: true,
+        label: 'Waiting for approval',
+      };
+    }
+    if (isSwapPending)
+      return {
+        disabled: true,
+        isLoading: true,
+        label: `Swapping ${formatNumberOrString({ input: swapAmounts[SwapMode.SELL].displayValue, type: NumberType.TokenNonTx })} ${selectedTokens[SwapMode.SELL].symbol} for ${formatNumberOrString({ input: swapAmounts[SwapMode.BUY].displayValue, type: NumberType.TokenNonTx })}  ${selectedTokens[SwapMode.BUY].symbol}`,
+      };
     if (status === TradeState.LOADING || status === TradeState.REEFETCHING)
       return {
         disabled: true,
@@ -151,16 +180,31 @@ const useSwapData = () => {
     return {
       disabled: false,
       isLoading: false,
-      label: 'Review',
+      label: isReviewModalOpen ? 'Swap' : 'Review',
     };
-  }, [status, error, sellToken, buyToken, swapAmounts, maxUsableSellBalance]);
+  }, [
+    isApprovePending,
+    isSwapPending,
+    swapAmounts,
+    selectedTokens,
+    status,
+    error,
+    sellToken,
+    buyToken,
+    maxUsableSellBalance,
+    isReviewModalOpen,
+  ]);
 
   return {
+    isReviewModalOpen,
+    isSwapPending,
     onClickMax,
     onSwitchToken,
     onTokenSelect,
     onUserInput,
     selectedTokens,
+    setIsReviewModalOpen,
+    swap,
     swapActionButtonState,
     swapAmounts,
   };
