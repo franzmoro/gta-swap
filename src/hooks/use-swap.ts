@@ -1,4 +1,4 @@
-import useApproveTransfer from './use-approve-transfer';
+import useRequestSpendingcap from './use-approve-transfer';
 import { useTransactionToast } from './use-toast';
 import useTransactionSettings from './use-transaction-settings';
 import useWeb3React from './use-web3-react';
@@ -66,7 +66,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTxnError, isConfirmed]);
 
-  const { approveToken, isApprovePending } = useApproveTransfer(tokenIn);
+  const { isApprovePending, onRequestSpendingcap } = useRequestSpendingcap(tokenIn);
 
   const getDeadline = useCallback(() => {
     return BigInt(Math.floor(Date.now() / 1000) + transactionDeadline * 60);
@@ -97,7 +97,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
           `Swapping ${formatNumberOrString({ input: swapAmounts[SwapMode.SELL].displayValue, type: NumberType.TokenNonTx })} ${tokenIn.symbol} for ${formatNumberOrString({ input: swapAmounts[SwapMode.BUY].displayValue, type: NumberType.TokenNonTx })}  ${tokenOut.symbol}`
         );
         if (!isETHIn) {
-          await approveToken(amountIn);
+          await onRequestSpendingcap(amountIn);
         }
 
         const amountOutMin = TokenFeeMath.getMinAmountReceived(amountOutExpected, slippage);
@@ -135,7 +135,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
       slippage,
       getDeadline,
       writeContractAsync,
-      approveToken,
+      onRequestSpendingcap,
       showError,
     ]
   );

@@ -4,9 +4,9 @@ import { V2_ROUTER_CONTRACT_ADDRESS } from '@/constants/address';
 import { Token } from '@/types';
 import { useCallback } from 'react';
 import { useConfig, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
-import { waitForTransactionReceipt } from 'wagmi/actions';
+import { readContract, waitForTransactionReceipt } from 'wagmi/actions';
 
-const useApproveTransfer = (token: Token) => {
+const useRequestSpendingcap = (token: Token) => {
   const { address: userAddress, isBaseSelected, isConnected } = useWeb3React();
   const { data: hash, error, isError, isPending, writeContractAsync } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
@@ -15,13 +15,24 @@ const useApproveTransfer = (token: Token) => {
 
   const config = useConfig();
 
-  const approveToken = useCallback(
+  const onRequestSpendingcap = useCallback(
     async (amount: bigint) => {
       if (!isBaseSelected && !isConnected)
         throw new Error('Wallet not connected or wrong network selected');
       if (!userAddress) throw new Error('Wallet not connected');
 
       try {
+        if (token.isNative) return;
+        // check if user already approved allowance on the contract
+        const allowance = await readContract(config, {
+          abi: ERC20_ABI,
+          address: token.wrappedAddress,
+          args: [userAddress, V2_ROUTER_CONTRACT_ADDRESS],
+          functionName: 'allowance',
+        });
+
+        // user already have allowance for the token
+        if (amount <= allowance) return;
         const txhash = await writeContractAsync({
           abi: ERC20_ABI,
           address: token.wrappedAddress,
@@ -34,16 +45,16 @@ const useApproveTransfer = (token: Token) => {
         throw err;
       }
     },
-    [config, isBaseSelected, isConnected, token.wrappedAddress, userAddress, writeContractAsync]
+    [config, isBaseSelected, isConnected, token, userAddress, writeContractAsync]
   );
 
   return {
-    approveToken,
     error,
     isApprovePending: isConfirming || isPending,
     isConfirmed,
     isError,
+    onRequestSpendingcap,
   };
 };
 
-export default useApproveTransfer;
+export default useRequestSpendingcap;
