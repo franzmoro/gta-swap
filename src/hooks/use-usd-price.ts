@@ -30,8 +30,7 @@ async function getETHPrice(): Promise<number> {
 }
 
 export const useGetTokenUSDPrice = (token: Token) => {
-  const pairAddress =
-    token ? TOKEN_PAIR_MAP[token.address as keyof typeof TOKEN_PAIR_MAP] : undefined;
+  const pairAddress = TOKEN_PAIR_MAP[token.address as keyof typeof TOKEN_PAIR_MAP];
 
   const { data: ethPrice, isLoading: isEthPriceLoading } = useQuery({
     queryFn: getETHPrice,

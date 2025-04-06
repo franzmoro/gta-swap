@@ -58,6 +58,7 @@ const useTokenBalance = (token: Token) => {
 
   return {
     balance: token.isNative ? ethBalance : data,
+    ethBalance,
     isLoading: isEthBalanceLoading || isLoading,
     refetch: token.isNative ? refetchEthBalance : refetch,
     refetchEthBalance,

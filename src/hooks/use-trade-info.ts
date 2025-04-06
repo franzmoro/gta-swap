@@ -1,3 +1,4 @@
+import useGetGasFees from './use-estimate-swap-gas';
 import { useTokenPriceFromPool } from './use-get-token-price';
 import { slippageValueAtom } from '@/atom';
 import { GOATAI_TOKEN } from '@/constants/tokens';
@@ -14,6 +15,8 @@ const useTradeInfo = ({
   swapAmounts: SwapAmounts;
 }) => {
   const slippage = useAtomValue(slippageValueAtom);
+
+  const { totalGasCost: networkFee } = useGetGasFees(swapAmounts, selectedTokens);
 
   const platformTokenAmount =
     selectedTokens[SwapMode.SELL].isPlatformToken ?
@@ -46,6 +49,7 @@ const useTradeInfo = ({
   const priceImpact = ((tokenAPrice - rate) / tokenAPrice) * 100;
 
   return {
+    networkFee,
     priceImpact,
     rate,
     slippage,

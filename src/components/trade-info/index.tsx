@@ -36,7 +36,7 @@ const TradeInfoSection = ({
   selectedTokens,
   swapAmounts,
 }: TradeInfoSectionProps) => {
-  const { priceImpact, rate, slippage, taxOnToken, tradeFee } = useTradeInfo({
+  const { networkFee, priceImpact, rate, slippage, taxOnToken, tradeFee } = useTradeInfo({
     selectedTokens,
     swapAmounts,
   });
@@ -68,7 +68,11 @@ const TradeInfoSection = ({
       <TransactionInfo
         label="Network cost"
         tooltipContent="This is the cost of the transaction on the network."
-        value="0.001 ETH"
+        value={formatNumberOrString({
+          input: networkFee,
+          suffix: 'ETH',
+          type: NumberType.TokenNonTx,
+        })}
       />
       <TransactionInfo
         label="Max. slippage"

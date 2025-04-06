@@ -5,7 +5,7 @@ import useWeb3React from './use-web3-react';
 import { V2_ROUTER_02_ABI } from '@/abis/V2Router02';
 import { V2_ROUTER_CONTRACT_ADDRESS } from '@/constants/address';
 import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
-import { TokenFeeMath } from '@/lib/utils/token-fee-math';
+import { prepareSwapArgs } from '@/lib/utils/swap';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { useCallback, useEffect, useMemo } from 'react';
 import { BaseError, ContractFunctionRevertedError } from 'viem';
@@ -68,57 +68,37 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
 
   const { isApprovePending, onRequestSpendingcap } = useRequestSpendingcap(tokenIn);
 
-  const getDeadline = useCallback(() => {
-    return BigInt(Math.floor(Date.now() / 1000) + transactionDeadline * 60);
-  }, [transactionDeadline]);
-
   const swap = useCallback(
     async (swapAmounts: SwapAmounts) => {
-      const [amountIn, amountOutExpected] = [
-        swapAmounts[SwapMode.SELL].rawValue,
-        swapAmounts[SwapMode.SELL].rawValue,
-      ];
       if ((!isBaseSelected && !isConnected) || !userAddress)
         throw new Error('Wallet not connected / wrong network selected');
 
-      if (!amountIn || !amountOutExpected) throw new Error('Invalid / no user input');
-
-      const isETHIn = !!tokenIn.isNative;
-      const isETHOut = !!tokenOut.isNative;
-
-      const functionName =
-        isETHIn ? 'swapExactETHForTokensSupportingFeeOnTransferTokens'
-        : isETHOut ? 'swapExactTokensForETHSupportingFeeOnTransferTokens'
-        : 'swapExactTokensForTokensSupportingFeeOnTransferTokens';
+      const { args, functionName } = prepareSwapArgs(
+        swapAmounts,
+        tokens,
+        userAddress,
+        slippage,
+        transactionDeadline
+      );
 
       try {
         showLoading(
           'Swapping',
           `Swapping ${formatNumberOrString({ input: swapAmounts[SwapMode.SELL].displayValue, type: NumberType.TokenNonTx })} ${tokenIn.symbol} for ${formatNumberOrString({ input: swapAmounts[SwapMode.BUY].displayValue, type: NumberType.TokenNonTx })}  ${tokenOut.symbol}`
         );
-        if (!isETHIn) {
-          await onRequestSpendingcap(amountIn);
+        if (!args.isETHIn) {
+          await onRequestSpendingcap(args.amountIn);
         }
-
-        const amountOutMin = TokenFeeMath.getMinAmountReceived(amountOutExpected, slippage);
-
-        const args = {
-          amountIn,
-          amountOutMin: amountOutMin,
-          deadline: getDeadline(),
-          path: [tokenIn.wrappedAddress, tokenOut.wrappedAddress],
-          to: userAddress,
-        };
 
         return writeContractAsync({
           abi: V2_ROUTER_02_ABI,
           address: V2_ROUTER_CONTRACT_ADDRESS,
           args:
-            isETHIn ?
+            args.isETHIn ?
               [args.amountOutMin, args.path, args.to, args.deadline]
             : [args.amountIn, args.amountOutMin, args.path, args.to, args.deadline],
           functionName,
-          ...(isETHIn && { value: args.amountIn }),
+          ...(args.isETHIn && { value: args.amountIn }),
         });
       } catch (err) {
         showError('Swap failed', parseTxError(err));
@@ -129,11 +109,12 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
       isBaseSelected,
       isConnected,
       userAddress,
-      tokenIn,
-      tokenOut,
-      showLoading,
+      tokens,
       slippage,
-      getDeadline,
+      transactionDeadline,
+      showLoading,
+      tokenIn.symbol,
+      tokenOut.symbol,
       writeContractAsync,
       onRequestSpendingcap,
       showError,
