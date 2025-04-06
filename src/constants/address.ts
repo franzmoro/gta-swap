@@ -1,5 +1,8 @@
+// token contract addresses
 export const GOATAI_ERC20_CONTRACT_ADDRESS = '0x226A19c076a3047a53e5430B14bcDB42dbccA159';
 export const USDC_ERC20_CONTRACT_ADDRESS = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+
+// v2 contract addresses
 export const V2_ROUTER_CONTRACT_ADDRESS = '0x4752ba5dbc23f44d87826276bf6fd6b1c372ad24';
 export const V2_FACTORY_CONTRACT_ADDRESS = '0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6';
 
