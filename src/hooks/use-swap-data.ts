@@ -28,6 +28,8 @@ const useSwapData = () => {
   const [currentInputContext, setCurrentInputContext] = useState<SwapMode>(SwapMode.SELL);
 
   const refetchDataOnSuccess = useCallback(() => {
+    setIsReviewModalOpen(false);
+    setSwapUserInputAmount('');
     // refetch token balance
     queryClient.invalidateQueries({ queryKey: ['token-balance'] });
     // fetch eth balance

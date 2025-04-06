@@ -36,17 +36,9 @@ export const useTransactionToast = () => {
 
   const showToast = useCallback(
     (type: ToastType, title: string, subtitle?: React.ReactNode | string, duration?: number) => {
-      // const description =
-      //   subtitle ?
-      //     <>
-      //       <strong>{title}</strong>
-      //       <br />
-      //       {subtitle}
-      //     </>
-      //   : <strong>{title}</strong>;
-
       if (toastIdRef.current === null) {
         toastIdRef.current = toast[type](title, {
+          closeButton: type !== 'loading',
           description: subtitle,
           duration: duration ?? (type === 'loading' ? Infinity : 5000),
           style: getToastStyle(type),
@@ -54,16 +46,11 @@ export const useTransactionToast = () => {
       } else {
         toast[type](title, {
           id: toastIdRef.current,
+          closeButton: type !== 'loading',
           description: subtitle,
           duration: duration ?? (type === 'loading' ? Infinity : 5000),
           style: getToastStyle(type),
         });
-        // toast.update(toastIdRef.current, {
-        //   description,
-        //   duration: duration ?? (type === 'loading' ? Infinity : 5000),
-        //   style: getToastStyle(type),
-        //   type: type === 'loading' ? 'loading' : type,
-        // });
       }
     },
     []
