@@ -1,3 +1,4 @@
+import useDebounce from './use-debounce';
 import useGetSwapQuote, { TradeState } from './use-get-swap-quote';
 import useMaxBalance from './use-max-token-balance';
 import { useSwap } from './use-swap';
@@ -40,8 +41,10 @@ const useSwapData = () => {
 
   const { isApprovePending, isSwapPending, swap } = useSwap(selectedTokens, refetchDataOnSuccess);
 
+  const debouncedUserInput = useDebounce(swapUserInputAmount.toString(), 500);
+
   const { amountOut, amountOutRaw, error, status } = useGetSwapQuote({
-    amountIn: swapUserInputAmount,
+    amountIn: debouncedUserInput,
     buyToken,
     sellToken,
     shouldRefetch: !isReviewModalOpen && !isSwapPending,
