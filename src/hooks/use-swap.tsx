@@ -46,6 +46,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
   });
 
   const {
+    data: receipt,
     error: txnError,
     isError: isTxnError,
     isLoading: isConfirming,
@@ -61,7 +62,18 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
 
   useEffect(() => {
     if (txnError && isTxnError) showError('Swap failed', parseTxError(txnError));
-    else if (isConfirmed) showSuccess('Swapped', 'Great deal bro');
+    else if (isConfirmed)
+      showSuccess(
+        'Swapped',
+        <a
+          className="text-background underline"
+          href={`https://sepolia.basescan.org/tx/${receipt.transactionHash}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          View Transaction on BaseScan
+        </a>
+      );
     reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTxnError, isConfirmed]);
