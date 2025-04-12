@@ -37,8 +37,8 @@ const useTradeInfo = ({
 
   const rate =
     swapAmounts[SwapMode.SELL].rawValue ?
-      parseFloat(swapAmounts[SwapMode.BUY].displayValue) /
-      parseFloat(swapAmounts[SwapMode.SELL].displayValue)
+      parseFloat(swapAmounts[SwapMode.BUY].displayValue || '0') /
+      parseFloat(swapAmounts[SwapMode.SELL].displayValue || '0')
     : 0;
 
   const { tokenAPrice } = useTokenPriceFromPool(
