@@ -15,8 +15,8 @@ const useSwapData = () => {
   const queryClient = useQueryClient();
   const [swapUserInputAmount, setSwapUserInputAmount] = useState<string>('');
   const [selectedTokens, setSelectedTokens] = useState<SelectedTokens>({
-    [SwapMode.BUY]: NATIVE_TOKEN,
-    [SwapMode.SELL]: GOATAI_TOKEN,
+    [SwapMode.BUY]: GOATAI_TOKEN,
+    [SwapMode.SELL]: NATIVE_TOKEN,
   });
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
 
