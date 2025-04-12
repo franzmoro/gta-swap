@@ -82,15 +82,6 @@ const SIX_SIG_FIGS_NO_COMMAS: NumberFormatOptions = {
   useGrouping: false,
 };
 
-const SIX_SIG_FIGS_TWO_DECIMALS_NO_COMMAS: NumberFormatOptions = {
-  maximumFractionDigits: 2,
-  maximumSignificantDigits: 6,
-  minimumFractionDigits: 2,
-  minimumSignificantDigits: 3,
-  notation: 'standard',
-  useGrouping: false,
-};
-
 const ONE_SIG_FIG_CURRENCY: NumberFormatOptions = {
   currency: 'USD',
   maximumSignificantDigits: 1,
@@ -176,7 +167,7 @@ const swapTradeAmountFormatter: FormatterRule[] = [
   { exact: 0, formatterOptions: NO_DECIMALS },
   { formatterOptions: SIX_SIG_FIGS_NO_COMMAS, upperBound: 0.1 },
   { formatterOptions: FIVE_DECIMALS_MAX_TWO_DECIMALS_MIN_NO_COMMAS, upperBound: 1 },
-  { formatterOptions: SIX_SIG_FIGS_TWO_DECIMALS_NO_COMMAS, upperBound: Infinity },
+  { formatterOptions: SIX_SIG_FIGS_TWO_DECIMALS, upperBound: Infinity },
 ];
 
 const swapDetailsAmountFormatter: FormatterRule[] = [
@@ -326,7 +317,7 @@ export function formatNumber({
   suffix = '',
   type = NumberType.TokenNonTx,
 }: FormatNumberOptions): string {
-  if (input === null || input === undefined) {
+  if (input === null || input === undefined || Number.isNaN(input)) {
     if (forceShowCurrencySymbol) {
       const parts = new Intl.NumberFormat(DEFAULT_LOCALE, {
         currency: 'USD',
@@ -374,7 +365,7 @@ export function formatNumberOrString({
   suffix,
   type,
 }: FormatNumberOrStringOptions): string {
-  if (input === null || input === undefined) {
+  if (input === null || input === undefined || Number.isNaN(input)) {
     return placeholder;
   }
   if (typeof input === 'string') {
@@ -443,3 +434,17 @@ export function formatReviewSwapCurrencyAmount(amount: number): string {
   }
   return formattedAmount;
 }
+
+export const formatWithCommas = (val: string) => {
+  const numStr = val.replace(/,/g, '');
+
+  if (!numStr || isNaN(Number(numStr.replace(/\.$/, '0')))) {
+    return numStr;
+  }
+
+  const [intPart, decimalPart] = numStr.split('.');
+
+  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  return decimalPart !== undefined ? `${formattedInt}.${decimalPart}` : formattedInt;
+};

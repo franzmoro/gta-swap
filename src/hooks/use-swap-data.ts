@@ -5,11 +5,11 @@ import { useSwap } from './use-swap';
 import useTokenBalance from './use-token-balance';
 import { GOATAI_TOKEN, NATIVE_TOKEN } from '@/constants/tokens';
 import { sanitizeNumber } from '@/lib/utils';
-import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
+import { formatNumberOrString, formatWithCommas, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode, Token } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
-import { formatEther, parseUnits } from 'viem/utils';
+import { formatEther, formatUnits, parseUnits } from 'viem/utils';
 
 const useSwapData = () => {
   const queryClient = useQueryClient();
@@ -64,7 +64,7 @@ const useSwapData = () => {
           rawValue: amountOutRaw,
         },
         [SwapMode.SELL]: {
-          displayValue: swapUserInputAmount,
+          displayValue: formatWithCommas(swapUserInputAmount),
           rawValue: parseUnits(swapUserInputAmount, sellToken.decimals),
         },
       };
@@ -72,7 +72,7 @@ const useSwapData = () => {
 
     return {
       [SwapMode.BUY]: {
-        displayValue: swapUserInputAmount,
+        displayValue: formatWithCommas(swapUserInputAmount),
         rawValue: parseUnits(swapUserInputAmount, buyToken.decimals),
       },
       [SwapMode.SELL]: {
@@ -150,7 +150,7 @@ const useSwapData = () => {
       return {
         disabled: true,
         isLoading: true,
-        label: `Swapping ${formatNumberOrString({ input: swapAmounts[SwapMode.SELL].displayValue, type: NumberType.TokenNonTx })} ${selectedTokens[SwapMode.SELL].symbol} for ${formatNumberOrString({ input: swapAmounts[SwapMode.BUY].displayValue, type: NumberType.TokenNonTx })}  ${selectedTokens[SwapMode.BUY].symbol}`,
+        label: `Swapping ${formatNumberOrString({ input: formatUnits(swapAmounts[SwapMode.SELL].rawValue, selectedTokens[SwapMode.SELL].decimals), type: NumberType.TokenNonTx })} ${selectedTokens[SwapMode.SELL].symbol} for ${formatNumberOrString({ input: formatUnits(swapAmounts[SwapMode.BUY].rawValue, selectedTokens[SwapMode.BUY].decimals), type: NumberType.TokenNonTx })}  ${selectedTokens[SwapMode.BUY].symbol}`,
       };
     if (status === TradeState.LOADING || status === TradeState.REEFETCHING)
       return {
