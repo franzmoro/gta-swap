@@ -20,6 +20,7 @@ import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { ArrowUpDown, Settings } from 'lucide-react';
 import { useState } from 'react';
+import { formatUnits } from 'viem';
 
 const SwapHeader = () => {
   return (
@@ -57,9 +58,13 @@ const SwapRateDisplay = ({
   );
 
   const rate =
-    swapAmounts[SwapMode.SELL].rawValue ?
-      parseFloat(swapAmounts[SwapMode.BUY].displayValue) /
-      parseFloat(swapAmounts[SwapMode.SELL].displayValue)
+    swapAmounts[SwapMode.SELL].rawValue && swapAmounts[SwapMode.SELL].rawValue ?
+      parseFloat(
+        formatUnits(swapAmounts[SwapMode.BUY].rawValue, selectedTokens[SwapMode.BUY].decimals)
+      ) /
+      parseFloat(
+        formatUnits(swapAmounts[SwapMode.SELL].rawValue, selectedTokens[SwapMode.SELL].decimals)
+      )
     : 0;
 
   const baseToken = isRateInversed ? selectedTokens[SwapMode.BUY] : selectedTokens[SwapMode.SELL];
@@ -73,7 +78,7 @@ const SwapRateDisplay = ({
         {`1 ${baseToken.symbol} = ${formatNumberOrString({
           input: displayRate,
           suffix: quoteToken.symbol,
-          type: NumberType.SwapPrice,
+          type: NumberType.TokenTx,
         })}`}{' '}
         <span className="text-primary/55">
           (

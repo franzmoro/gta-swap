@@ -8,7 +8,7 @@ import { formatNumberOrString, NumberType } from '@/lib/utils/format-number';
 import { prepareSwapArgs } from '@/lib/utils/swap';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { useCallback, useEffect, useMemo } from 'react';
-import { BaseError, ContractFunctionRevertedError } from 'viem';
+import { BaseError, ContractFunctionRevertedError, formatUnits } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 const parseTxError = (error: unknown): string => {
@@ -96,7 +96,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
       try {
         showLoading(
           'Swapping',
-          `Swapping ${formatNumberOrString({ input: swapAmounts[SwapMode.SELL].displayValue, type: NumberType.TokenNonTx })} ${tokenIn.symbol} for ${formatNumberOrString({ input: swapAmounts[SwapMode.BUY].displayValue, type: NumberType.TokenNonTx })}  ${tokenOut.symbol}`
+          `Swapping ${formatNumberOrString({ input: formatUnits(swapAmounts[SwapMode.SELL].rawValue, tokenIn.decimals), type: NumberType.TokenNonTx })} ${tokenIn.symbol} for ${formatNumberOrString({ input: formatUnits(swapAmounts[SwapMode.BUY].rawValue, tokenOut.decimals), type: NumberType.TokenNonTx })}  ${tokenOut.symbol}`
         );
         if (!args.isETHIn) {
           await onRequestSpendingcap(args.amountIn);
@@ -125,8 +125,8 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
       slippage,
       transactionDeadline,
       showLoading,
-      tokenIn.symbol,
-      tokenOut.symbol,
+      tokenIn,
+      tokenOut,
       writeContractAsync,
       onRequestSpendingcap,
       showError,
