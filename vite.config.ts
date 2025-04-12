@@ -53,6 +53,19 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       plugins: [(rollupNodePolyFill as any)()],
+      // external: ['react', 'react-dom'],
+      // output: {
+      //   globals: {
+      //     react: 'React',
+      //     'react-dom': 'ReactDOM',
+      //   },
+      // },
+    },
+    lib: {
+      entry: path.resolve(__dirname, 'src/main.tsx'),
+      name: 'GOATAISwap',
+      fileName: (format) => `goatai-swap.${format}.js`,
+      formats: ['es', 'umd'],
     },
   },
   // esbuild: {

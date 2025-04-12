@@ -6,12 +6,26 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from 'sonner';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Providers>
-      <SmoothScrollbar />
-      <App />
-      <Toaster position="top-right" richColors theme="light" />
-    </Providers>
-  </StrictMode>
-);
+// Create a mount function that can be called from the global scope
+export function mountSwapWidget(elementId: string) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    createRoot(element).render(
+      <StrictMode>
+        <Providers>
+          <SmoothScrollbar />
+          <App />
+          <Toaster position="top-right" richColors theme="light" />
+        </Providers>
+      </StrictMode>
+    );
+  }
+}
+
+// Auto-initialize if we're running directly
+if (document.getElementById('goatai-swap-widget')) {
+  mountSwapWidget('goatai-swap-widget');
+}
+
+// Make the mount function available globally
+(window as any).mountSwapWidget = mountSwapWidget;
