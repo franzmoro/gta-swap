@@ -4,6 +4,7 @@ import useTradeInfo from '@/hooks/use-trade-info';
 import { useGetTokenUSDPrice } from '@/hooks/use-usd-price';
 import { formatNumberOrString, formatPercent, NumberType } from '@/lib/utils/format-number';
 import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
+import { ReactNode } from 'react';
 
 type TradeInfoSectionProps = {
   isReviewModal?: boolean;
@@ -17,7 +18,7 @@ const TransactionInfo = ({
   value,
 }: {
   label: string;
-  tooltipContent?: string;
+  tooltipContent?: ReactNode;
   value: string;
 }) => {
   return (
@@ -46,21 +47,47 @@ const TradeInfoSection = ({
   return (
     <div className="flex flex-col gap-3">
       <TransactionInfo
-        label="G.O.A.T.AI fee (6%)"
-        tooltipContent="Your transaction will revert if the price changes more than the slippage percentage."
+        label="$GOATAI fee (6%)"
+        tooltipContent={
+          <div>
+            <p>We charge a 6% fee on buy/sell trades.</p>
+            <p>
+              60% goes to support charitable activities of the Global Running Foundation (GRF).{' '}
+              <a
+                className="text-primary hover:underline"
+                href="https://goatathletics.ai/charity"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Learn more
+              </a>
+            </p>
+            <p>
+              40% goes to Team G.O.A.T.AI operations and marketing. This will allow us to have a
+              sustainable model to continue operating and provide a steady stream of funding for
+              projects.{' '}
+            </p>
+            <a
+              className="text-primary hover:underline"
+              href="https://www.goatathletics.ai/team-goatai"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Learn more
+            </a>
+          </div>
+        }
         value={formatNumberOrString({
           input: taxOnToken,
-          placeholder: '',
           suffix: GOATAI_TOKEN.symbol,
           type: NumberType.TokenNonTx,
         })}
       />
       <TransactionInfo
         label="Trade fee (0.30%)"
-        tooltipContent="Your transaction will revert if the price changes more than the slippage percentage."
+        tooltipContent="Standard Liquidity fee charged by Uniswap"
         value={formatNumberOrString({
           input: tradeFee,
-          placeholder: '',
           suffix: selectedTokens[SwapMode.SELL].symbol,
           type: NumberType.TokenNonTx,
         })}
@@ -94,7 +121,6 @@ const TradeInfoSection = ({
           })} (${formatNumberOrString({
             conversionRate: tokenPriceInUSD,
             input: rate,
-            placeholder: '',
             type: NumberType.FiatTokenPrice,
           })})`}
         />
