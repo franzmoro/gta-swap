@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 type ToastType = 'error' | 'loading' | 'success';
 
-const getToastStyle = (type: ToastType) => {
+export const getToastStyle = (type: ToastType) => {
   switch (type) {
     case 'error':
       return {

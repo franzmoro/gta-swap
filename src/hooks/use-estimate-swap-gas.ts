@@ -3,7 +3,7 @@ import useWeb3React from './use-web3-react';
 import { V2_ROUTER_02_ABI } from '@/abis/V2Router02';
 import { V2_ROUTER_CONTRACT_ADDRESS } from '@/constants/address';
 import { prepareSwapArgs } from '@/lib/utils/swap';
-import { SelectedTokens, SwapAmounts } from '@/types';
+import { SelectedTokens, SwapAmounts, SwapMode } from '@/types';
 import { useMemo } from 'react';
 import { encodeFunctionData, formatEther } from 'viem';
 import { useEstimateGas, useGasPrice } from 'wagmi';
@@ -13,7 +13,13 @@ const useGetGasFees = (swapAmounts: SwapAmounts, tokens: SelectedTokens) => {
   const { slippageFormatted: slippage, transactionDeadline } = useTransactionSettings();
 
   const swapArgs = useMemo(() => {
-    if (!address || (!isConnected && !isBaseSelected)) return undefined;
+    if (
+      !address ||
+      (!isConnected && !isBaseSelected) ||
+      !swapAmounts[SwapMode.BUY].rawValue ||
+      !swapAmounts[SwapMode.SELL].rawValue
+    )
+      return undefined;
     try {
       return prepareSwapArgs(swapAmounts, tokens, address, slippage, transactionDeadline);
     } catch (error) {
