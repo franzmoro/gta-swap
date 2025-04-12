@@ -5,7 +5,7 @@ import {
   USDC_ERC20_CONTRACT_ADDRESS,
   USDC_WETH_POOL_CONTRACT_ADDRESS,
 } from '@/constants/address';
-import { COINGECKO_ETH_PRICE_API_URL } from '@/constants/index';
+import { PRICING_API_URL } from '@/constants/index';
 import { NATIVE_TOKEN } from '@/constants/tokens';
 import { Token } from '@/types';
 import { useQuery } from '@tanstack/react-query';
@@ -18,14 +18,34 @@ const TOKEN_PAIR_MAP = {
   [USDC_ERC20_CONTRACT_ADDRESS]: USDC_WETH_POOL_CONTRACT_ADDRESS,
 } as const;
 
-async function getETHPrice(): Promise<number> {
+type PoolResponse = {
+  baseReserveAmount: number;
+  baseToken: string;
+  quoteReserveAmount: number;
+  quoteToken: string;
+  ratio: number;
+  reserves: [string, string];
+};
+
+async function getETHUSDCPrice(): Promise<number> {
   try {
-    const response = await fetch(COINGECKO_ETH_PRICE_API_URL);
-    const data = await response.json();
-    return data.ethereum.usd;
+    const response = await fetch(`${PRICING_API_URL}/pool/eth_usdc`);
+    const data = (await response.json()) as PoolResponse;
+    return data.ratio;
   } catch (error) {
     console.error('Failed to fetch ETH price', error);
     return 0;
+  }
+}
+
+async function getGOATAIEthReserves(): Promise<[bigint, bigint]> {
+  try {
+    const response = await fetch(`${PRICING_API_URL}/pool/eth_goatai`);
+    const data = (await response.json()) as PoolResponse;
+    return data.reserves.map((reserve) => BigInt(reserve)) as [bigint, bigint];
+  } catch (error) {
+    console.error('Failed to fetch GOATAI price', error);
+    return [0n, 0n];
   }
 }
 
@@ -33,22 +53,19 @@ export const useGetTokenUSDPrice = (token: Token) => {
   const pairAddress = TOKEN_PAIR_MAP[token.address as keyof typeof TOKEN_PAIR_MAP];
 
   const { data: ethPrice, isLoading: isEthPriceLoading } = useQuery({
-    queryFn: getETHPrice,
-    queryKey: ['ethPrice'],
+    queryFn: getETHUSDCPrice,
+    queryKey: ['ethUSDCPool'],
     refetchInterval: 15 * 1000,
     refetchOnMount: false,
     staleTime: Infinity,
   });
 
-  // Fetch reserves from Uniswap V2 Pair
-  const { data: reserves, isLoading: isReservesLoading } = useReadContract({
-    abi: V2_PAIR_ABI,
-    address: pairAddress,
-    functionName: 'getReserves',
-    query: {
-      enabled: !!pairAddress,
-      refetchOnMount: false,
-    },
+  const { data: reserves, isLoading: isReservesLoading } = useQuery({
+    queryFn: getGOATAIEthReserves,
+    queryKey: ['goataiEthPool'],
+    refetchInterval: 15 * 1000,
+    refetchOnMount: false,
+    staleTime: Infinity,
   });
 
   // Fetch token0 to determine order
