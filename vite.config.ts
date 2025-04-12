@@ -50,25 +50,24 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: false, // Set to false for production to reduce size
     rollupOptions: {
       plugins: [(rollupNodePolyFill as any)()],
-      // external: ['react', 'react-dom'],
-      // output: {
-      //   globals: {
-      //     react: 'React',
-      //     'react-dom': 'ReactDOM',
-      //   },
-      // },
+      external: ['react', 'react-dom'], // Keep only React and ReactDOM external
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
+        manualChunks: undefined, // Disable code splitting
+        inlineDynamicImports: true, // Bundle dynamic imports
+      },
     },
     lib: {
       entry: path.resolve(__dirname, 'src/main.tsx'),
       name: 'GOATAISwap',
-      fileName: (format) => `goatai-swap.${format}.js`,
-      formats: ['es', 'umd'],
+      fileName: () => `goatai-swap.js`, // Single filename
+      formats: ['umd'], // Just UMD format for script tags
     },
   },
-  // esbuild: {
-  //   drop: ['console', 'debugger'],
-  // },
 });
