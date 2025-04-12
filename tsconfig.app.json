@@ -32,6 +32,8 @@
     "dist",
     "build",
     "coverage",
+    "vitest.config.ts",
+    "vitest.setup.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*.spec.ts",
