@@ -18,7 +18,7 @@ export const GOATAI_TOKEN: Token = {
   address: GOATAI_ERC20_CONTRACT_ADDRESS,
   decimals: 18,
   isPlatformToken: true,
-  logo: 'src/assets/images/goatai-logo.png',
+  logo: 'https://raw.githubusercontent.com/franzmoro/gta-swap/refs/heads/main/src/assets/images/goatai-logo.png',
   name: 'G.O.A.T.AI',
   symbol: 'GOATAI',
   wrappedAddress: GOATAI_ERC20_CONTRACT_ADDRESS,
