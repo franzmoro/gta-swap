@@ -67,7 +67,7 @@ export const useSwap = (tokens: SelectedTokens, onSwapSuccess: () => void) => {
         'Swapped',
         <a
           className="text-background underline"
-          href={`https://sepolia.basescan.org/tx/${receipt.transactionHash}`}
+          href={`https://basescan.org/tx/${receipt.transactionHash}`}
           rel="noopener noreferrer"
           target="_blank"
         >
