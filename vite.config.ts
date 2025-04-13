@@ -7,6 +7,9 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
+const isProd = process.env.NODE_ENV === 'production';
+console.log('isProd:', isProd);
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -15,6 +18,8 @@ export default defineConfig({
       babel: {
         presets: [],
       },
+      // Ensure React is in production mode
+      ...(isProd && { jsxRuntime: 'automatic' }),
     }),
     tailwindcss(),
     nodePolyfills({
@@ -30,9 +35,22 @@ export default defineConfig({
     }),
     svgr(),
   ],
+  define: {
+    ...(isProd && {
+      // Force React to use production mode
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      // This is important for React to use production mode
+      'process.env': {},
+    }),
+  },
   optimizeDeps: {
     esbuildOptions: {
-      define: { global: 'globalThis' },
+      define: {
+        global: 'globalThis',
+        // TODO: verify if this is really needed
+        // Force React to use production mode during dependency optimization
+        ...(isProd && { 'process.env.NODE_ENV': JSON.stringify('production') }),
+      },
     },
     include: ['react-icons'],
   },
@@ -50,7 +68,10 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: false, // Set to false for production to reduce size
+    ...(isProd && {
+      sourcemap: false,
+      minify: true,
+    }),
     rollupOptions: {
       plugins: [(rollupNodePolyFill as any)()],
       // external: ['react', 'react-dom'], // Keep only React and ReactDOM external

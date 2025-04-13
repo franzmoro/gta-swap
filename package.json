@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b tsconfig.app.json && vite build",
+    "build": "NODE_ENV=production tsc -b tsconfig.app.json && vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
