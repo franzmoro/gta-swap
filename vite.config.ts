@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgr from 'vite-plugin-svgr';
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -18,7 +17,6 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
-    cssInjectedByJsPlugin(),
     nodePolyfills({
       exclude: ['fs'],
       // Whether to polyfill specific globals.
@@ -69,7 +67,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/main.tsx'),
       name: 'GOATAISwap',
       fileName: () => `goatai-swap.js`, // Single filename
-      formats: ['es'],
+      formats: ['umd'], // Just UMD format for script tags
     },
   },
 });
