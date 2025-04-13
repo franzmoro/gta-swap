@@ -27,7 +27,7 @@ const TransactionInfo = ({
         <p className="text-sm text-foreground/60">{label}</p>
         {tooltipContent && <InfoButton content={tooltipContent} />}
       </div>
-      <p className="text-sm text-foreground/80">{value}</p>
+      <p className="text-end text-sm text-foreground/80">{value}</p>
     </div>
   );
 };

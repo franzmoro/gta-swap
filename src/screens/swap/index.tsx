@@ -74,7 +74,7 @@ const SwapRateDisplay = ({
 
   return (
     <Button className="p-0" onClick={() => setIsRateInversed((prev) => !prev)} variant="unstyled">
-      <p className="text-sm text-primary/90">
+      <p className="text-xs text-primary/90 sm:text-sm">
         {`1 ${baseToken.symbol} = ${formatNumberOrString({
           input: displayRate,
           suffix: quoteToken.symbol,
@@ -177,7 +177,7 @@ const SwapSection = ({
         {(!isConnected || !isBaseSelected) && !swapActionButtonState.isLoading ?
           <ConnectWalletButton size="lg" />
         : <Button
-            className="w-full text-[20px] font-extrabold"
+            className="w-full px-0 text-[18px] font-extrabold md:text-[20px]"
             disabled={swapActionButtonState.disabled}
             onClick={() => setIsReviewModalOpen(true)}
             size="lg"

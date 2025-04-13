@@ -33,6 +33,7 @@ export default [
       '*.gen.*',
       '*.d.ts',
       'eslint.config.js',
+      'tailwind.config.js',
     ],
     languageOptions: {
       parser: typescriptEslintParser,
