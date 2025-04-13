@@ -1,5 +1,6 @@
 import { V2_ROUTER_02_ABI } from '@/abis/V2Router02';
-import { V2_ROUTER_CONTRACT_ADDRESS } from '@/constants/address';
+import { USDC_ERC20_CONTRACT_ADDRESS, V2_ROUTER_CONTRACT_ADDRESS } from '@/constants/address';
+import { NATIVE_TOKEN } from '@/constants/tokens';
 import { TokenFeeMath } from '@/lib/utils/token-fee-math';
 import { SwapMode, Token } from '@/types';
 import { useMemo } from 'react';
@@ -80,11 +81,19 @@ const useGetSwapQuote = ({
     buyToken?.isPlatformToken ?? false
   );
 
+  const route =
+    (
+      buyToken.wrappedAddress === USDC_ERC20_CONTRACT_ADDRESS ||
+      sellToken.address === USDC_ERC20_CONTRACT_ADDRESS
+    ) ?
+      [
+        sellToken.wrappedAddress.toLowerCase(),
+        NATIVE_TOKEN.wrappedAddress,
+        buyToken.wrappedAddress.toLowerCase(),
+      ]
+    : [sellToken.wrappedAddress.toLowerCase(), buyToken.wrappedAddress.toLowerCase()];
   const functionName = isExactIn ? 'getAmountsOut' : 'getAmountsIn';
-  const args = [
-    amountInRawWithTax,
-    [sellToken.wrappedAddress.toLowerCase(), buyToken.wrappedAddress.toLowerCase()],
-  ] as const;
+  const args = [amountInRawWithTax, route] as const;
 
   const { data, error, isLoading, isRefetching } = useReadContract({
     abi: V2_ROUTER_02_ABI,
@@ -111,9 +120,10 @@ const useGetSwapQuote = ({
       };
 
     const outputToken = isExactIn ? buyToken : sellToken;
-    const amountOutRaw = isExactIn ? data[1] : data[0];
+    const amountOutRaw = isExactIn ? data.at(-1) : data[0];
+
     const amountOut = calculateFinalAmount(
-      amountOutRaw,
+      amountOutRaw ?? 0n,
       isExactIn,
       sellToken?.isPlatformToken ?? false,
       buyToken?.isPlatformToken ?? false

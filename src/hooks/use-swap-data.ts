@@ -9,7 +9,7 @@ import { formatNumberOrString, formatWithCommas, NumberType } from '@/lib/utils/
 import { SelectedTokens, SwapAmounts, SwapMode, Token } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
-import { formatEther, formatUnits, parseUnits } from 'viem/utils';
+import { formatUnits, parseUnits } from 'viem/utils';
 
 const useSwapData = () => {
   const queryClient = useQueryClient();
@@ -89,7 +89,9 @@ const useSwapData = () => {
   /** Actions */
   const onClickMax = () => {
     setCurrentInputContext(SwapMode.SELL);
-    setSwapUserInputAmount(formatEther(maxUsableSellBalance ?? BigInt(0)));
+    setSwapUserInputAmount(
+      formatUnits(maxUsableSellBalance ?? BigInt(0), selectedTokens[SwapMode.SELL].decimals)
+    );
   };
 
   const onTokenSelect = (token: Token, mode: SwapMode) => {
