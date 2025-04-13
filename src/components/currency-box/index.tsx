@@ -13,6 +13,7 @@ import { formatNumberOrString } from '@/lib/utils/format-number';
 import { SwapMode, Token } from '@/types';
 import { ChevronDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { formatUnits } from 'viem';
 
 interface CurrencyBoxProps {
   disabled?: boolean;
@@ -22,7 +23,7 @@ interface CurrencyBoxProps {
   onClickMax?: () => void;
   onSelectToken: (token: Token, mode: SwapMode) => void;
   selectedToken: Token;
-  value: string;
+  swapAmount: { displayValue: string; rawValue: bigint };
 }
 
 const CurrencyBox = ({
@@ -33,7 +34,7 @@ const CurrencyBox = ({
   onClickMax,
   onSelectToken,
   selectedToken,
-  value,
+  swapAmount,
 }: CurrencyBoxProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const { isBaseSelected, isConnected } = useWeb3React();
@@ -49,9 +50,12 @@ const CurrencyBox = ({
   const inputFiatValue = useMemo(() => {
     return formatFiatPrice({
       conversionRate: tokenPriceInUSD,
-      price: value ? parseFloat(value) : 0,
+      price:
+        swapAmount.rawValue ?
+          parseFloat(formatUnits(swapAmount.rawValue, selectedToken.decimals))
+        : 0,
     });
-  }, [tokenPriceInUSD, value]);
+  }, [selectedToken.decimals, swapAmount.rawValue, tokenPriceInUSD]);
 
   return (
     <div
@@ -71,7 +75,7 @@ const CurrencyBox = ({
           pattern="^[0-9]*[.,]?[0-9]*$"
           placeholder="0"
           type="text"
-          value={value}
+          value={swapAmount.displayValue}
         />
         <Dialog modal onOpenChange={setOpen} open={open}>
           <DialogOverlay />

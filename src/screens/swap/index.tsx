@@ -72,7 +72,7 @@ const SwapRateDisplay = ({
         {`1 ${baseToken.symbol} = ${formatNumberOrString({
           input: displayRate,
           suffix: quoteToken.symbol,
-          type: NumberType.TokenTx,
+          type: NumberType.TokenNonTx,
         })}`}{' '}
         <span className="text-primary/55">
           (
@@ -141,7 +141,7 @@ const SwapSection = ({
           onClickMax={onClickMax}
           onSelectToken={onTokenSelect}
           selectedToken={selectedTokens[SwapMode.SELL]}
-          value={swapAmounts.sell.displayValue}
+          swapAmount={swapAmounts[SwapMode.SELL]}
         />
         <div className="relative flex w-full items-center justify-center">
           <div className="absolute h-px w-full bg-foreground/40"></div>
@@ -163,7 +163,7 @@ const SwapSection = ({
           }}
           onSelectToken={onTokenSelect}
           selectedToken={selectedTokens[SwapMode.BUY]}
-          value={swapAmounts.buy.displayValue}
+          swapAmount={swapAmounts[SwapMode.BUY]}
         />
       </div>
 
