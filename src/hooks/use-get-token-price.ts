@@ -65,14 +65,14 @@ export function useTokenPriceFromPool(tokenA: Token, tokenB: Token): TokenPrice 
     // 2-hop pricing logic
     if (involvesUSDC && gotaiEthPoolData && ethUsdcPoolData) {
       if (
-        tokenA.address.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase() &&
-        tokenB.address.toLowerCase() === GOATAI_ERC20_CONTRACT_ADDRESS.toLowerCase()
+        tokenA.address?.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase() &&
+        tokenB.address?.toLowerCase() === GOATAI_ERC20_CONTRACT_ADDRESS.toLowerCase()
       ) {
         // Path: USDC -> ETH -> GOATAI
 
         // ETH_USDC pool: Determine token order
         const usdcIsToken0 =
-          ethUsdcPoolData.token0.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase();
+          ethUsdcPoolData.token0?.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase();
         const [usdcReserve, ethReserve] =
           usdcIsToken0 ?
             [ethUsdcPoolData.reserves[0], ethUsdcPoolData.reserves[1]]
@@ -83,7 +83,7 @@ export function useTokenPriceFromPool(tokenA: Token, tokenB: Token): TokenPrice 
 
         // ETH_GOATAI pool: Determine token order
         const ethIsToken0 =
-          gotaiEthPoolData.token0.toLowerCase() === NATIVE_TOKEN.wrappedAddress.toLowerCase();
+          gotaiEthPoolData.token0?.toLowerCase() === NATIVE_TOKEN.wrappedAddress.toLowerCase();
         const [ethReserveGoatai, goataiReserve] =
           ethIsToken0 ?
             [gotaiEthPoolData.reserves[0], gotaiEthPoolData.reserves[1]]
@@ -97,14 +97,14 @@ export function useTokenPriceFromPool(tokenA: Token, tokenB: Token): TokenPrice 
 
         return { tokenAPrice: priceAinB, tokenBPrice: priceBinA };
       } else if (
-        tokenB.address.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase() &&
-        tokenA.address.toLowerCase() === GOATAI_ERC20_CONTRACT_ADDRESS.toLowerCase()
+        tokenB.address?.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase() &&
+        tokenA.address?.toLowerCase() === GOATAI_ERC20_CONTRACT_ADDRESS.toLowerCase()
       ) {
         // Path: GOATAI -> ETH -> USDC
 
         // ETH_GOATAI pool: Determine token order
         const ethIsToken0 =
-          gotaiEthPoolData.token0.toLowerCase() === NATIVE_TOKEN.wrappedAddress.toLowerCase();
+          gotaiEthPoolData.token0?.toLowerCase() === NATIVE_TOKEN.wrappedAddress.toLowerCase();
         const [ethReserveGoatai, goataiReserve] =
           ethIsToken0 ?
             [gotaiEthPoolData.reserves[0], gotaiEthPoolData.reserves[1]]
@@ -116,7 +116,7 @@ export function useTokenPriceFromPool(tokenA: Token, tokenB: Token): TokenPrice 
 
         // ETH_USDC pool: Determine token order
         const usdcIsToken0 =
-          ethUsdcPoolData.token0.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase();
+          ethUsdcPoolData.token0?.toLowerCase() === USDC_ERC20_CONTRACT_ADDRESS.toLowerCase();
         const [usdcReserve, ethReserve] =
           usdcIsToken0 ?
             [ethUsdcPoolData.reserves[0], ethUsdcPoolData.reserves[1]]
@@ -139,7 +139,7 @@ export function useTokenPriceFromPool(tokenA: Token, tokenB: Token): TokenPrice 
 
     const { reserves: reservesData, token0 } = gotaiEthPoolData;
 
-    const isTokenAFirst = tokenA.wrappedAddress.toLowerCase() === token0.toLowerCase();
+    const isTokenAFirst = tokenA.wrappedAddress?.toLowerCase() === token0?.toLowerCase();
     const reserveA = isTokenAFirst ? reservesData[0] : reservesData[1];
     const reserveB = isTokenAFirst ? reservesData[1] : reservesData[0];
 
