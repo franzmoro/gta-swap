@@ -106,8 +106,8 @@ const CurrencyBox = ({
           isConnected &&
           isBaseSelected &&
           selectedToken &&
-          balance?.value &&
-          balance.value > BigInt(0)
+          balance?.value !== undefined &&
+          balance.value >= BigInt(0)
         ) ?
           <div className="flex w-full items-center justify-end">
             {isLoading ?
@@ -120,7 +120,7 @@ const CurrencyBox = ({
                     type: NumberType.TokenNonTx,
                   })}
                 </p>
-                {mode === SwapMode.SELL && (
+                {mode === SwapMode.SELL && !!balance?.value && (
                   <Button
                     className="mx-1 p-0 text-xs"
                     onClick={onClickMax}
