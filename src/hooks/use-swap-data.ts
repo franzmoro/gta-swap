@@ -31,6 +31,8 @@ const useSwapData = () => {
   const refetchDataOnSuccess = useCallback(() => {
     setIsReviewModalOpen(false);
     setSwapUserInputAmount('');
+    queryClient.invalidateQueries({ queryKey: ['token-usd-price'] });
+
     // refetch token balance
     queryClient.invalidateQueries({ queryKey: ['token-balance'] });
     // fetch eth balance
