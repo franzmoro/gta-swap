@@ -2,12 +2,6 @@ import CurrencyBox from '@/components/currency-box';
 import SwapReviewModal from '@/components/swap-review-modal';
 import TradeInfoSection from '@/components/trade-info';
 import TransactionSettings from '@/components/transaction-settings';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ConnectWalletButton } from '@/components/wallet-provider';
@@ -189,17 +183,8 @@ const SwapSection = ({
 
       {swapAmounts[SwapMode.SELL].rawValue && swapAmounts[SwapMode.BUY].rawValue ?
         <div className="-my-4">
-          <Accordion className="w-full" collapsible type="single">
-            <AccordionItem value="item-1">
-              <div className="flex flex-row items-center justify-between gap-2">
-                <SwapRateDisplay selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
-                <AccordionTrigger className="cursor-pointer" />
-              </div>
-              <AccordionContent>
-                <TradeInfoSection selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <SwapRateDisplay selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
+          <TradeInfoSection selectedTokens={selectedTokens} swapAmounts={swapAmounts} />
         </div>
       : null}
 
