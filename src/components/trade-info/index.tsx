@@ -47,6 +47,11 @@ const TradeInfoSection = ({
   return (
     <div className="flex flex-col gap-3">
       <TransactionInfo
+        label="Price impact"
+        tooltipContent="The impact your trade has on the market price of this pool"
+        value={formatPercent(priceImpact)}
+      />
+      <TransactionInfo
         label="$GOATAI fee (6%)"
         tooltipContent={
           <div>
@@ -106,11 +111,7 @@ const TradeInfoSection = ({
         tooltipContent="Your transaction will revert if the price slips more than the slippage percentage."
         value={formatPercent(slippage)}
       />
-      <TransactionInfo
-        label="Price impact"
-        tooltipContent="The impact your trade has on the market price of this pool"
-        value={formatPercent(priceImpact)}
-      />
+
       {isReviewModal && (
         <TransactionInfo
           label="Rate"

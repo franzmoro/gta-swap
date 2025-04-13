@@ -337,7 +337,7 @@ export function formatNumber({
   const { formatterOptions, hardCodedInput } = getFormatterRule(input, type, conversionRate);
 
   if (formatterOptions.currency) {
-    input = conversionRate ? input * conversionRate : input;
+    input = conversionRate !== undefined ? input * conversionRate : input;
     formatterOptions.currency = 'USD';
   }
 
