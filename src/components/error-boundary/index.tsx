@@ -26,7 +26,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
     toast.error('Something went wrong', {
       closeButton: true,
-      description: 'Error caught in error boundary. If this error persists, please contact support',
+      description: 'There was an error. Please reach out on Telegram for support.',
       duration: 5000,
       style: getToastStyle('error'),
     });
