@@ -72,7 +72,7 @@ export const Providers = (props: { children: ReactNode }) => {
     <ThirdwebProvider>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools client={queryClient} />
+          {/* <ReactQueryDevtools client={queryClient} /> */}
           <Updater />
           {props.children}
         </QueryClientProvider>

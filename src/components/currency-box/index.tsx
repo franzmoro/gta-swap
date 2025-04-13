@@ -63,82 +63,77 @@ const CurrencyBox = ({
       <p className="mb-2 text-sm text-foreground/70 capitalize">{mode}</p>
 
       <div className="flex items-center justify-between gap-2">
-        <div className="flex-1">
-          <Input
-            className="border-none bg-transparent p-0 !text-3xl font-semibold text-foreground shadow-none ring-0 ring-offset-0 outline-none hover:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-            disabled={disabled}
-            inputMode="decimal"
-            onChange={(e) => onChange(e.target.value)}
-            pattern="^[0-9]*[.,]?[0-9]*$"
-            placeholder="0"
-            type="text"
-            value={value}
-          />
-          {isTokenPriceLoading ?
-            <Skeleton className="skeleton mt-2 h-3 w-[20px] rounded-sm" />
-          : <p className="mt-1 text-sm text-foreground/50">{inputFiatValue}</p>}
-        </div>
+        <Input
+          className="flex-1 border-none bg-transparent p-0 text-xl font-semibold text-foreground shadow-none ring-0 ring-offset-0 outline-none hover:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 md:text-3xl"
+          disabled={disabled}
+          inputMode="decimal"
+          onChange={(e) => onChange(e.target.value)}
+          pattern="^[0-9]*[.,]?[0-9]*$"
+          placeholder="0"
+          type="text"
+          value={value}
+        />
+        <Dialog modal onOpenChange={setOpen} open={open}>
+          <DialogOverlay />
+          <DialogTrigger asChild>
+            <Button
+              className="flex items-center gap-0.5 rounded-full py-5"
+              variant={selectedToken ? 'outline' : 'secondary'}
+            >
+              {selectedToken ?
+                <div className="flex items-center gap-2">
+                  <TokenLogo size={{ default: 25, md: 32 }} tokenSrc={selectedToken.logo} />
+                  <p className="text-base font-extrabold md:text-[20px]">{selectedToken.symbol}</p>
+                </div>
+              : <p className="text-sm font-medium">Select Token</p>}
+              <ChevronDown className="mt-1 size-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <TokenSelectModalContent
+              disabledTokens={notAllowedTokens}
+              onSelectToken={onTokenSelect}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
 
-        <div className="flex flex-col items-end gap-2 self-baseline">
-          <Dialog modal onOpenChange={setOpen} open={open}>
-            <DialogOverlay />
-            <DialogTrigger asChild>
-              <Button
-                className="flex items-center gap-0.5 rounded-full py-5"
-                variant={selectedToken ? 'outline' : 'secondary'}
-              >
-                {selectedToken ?
-                  <div className="flex items-center gap-2">
-                    <TokenLogo size={30} tokenSrc={selectedToken.logo} />
-                    <p className="text-base font-extrabold md:text-[20px]">
-                      {selectedToken.symbol}
-                    </p>
-                  </div>
-                : <p className="text-sm font-medium">Select Token</p>}
-                <ChevronDown className="mt-1 size-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <TokenSelectModalContent
-                disabledTokens={notAllowedTokens}
-                onSelectToken={onTokenSelect}
-              />
-            </DialogContent>
-          </Dialog>
-
-          {(
-            isConnected &&
-            isBaseSelected &&
-            selectedToken &&
-            balance?.value &&
-            balance.value > BigInt(0)
-          ) ?
-            <div className="flex w-full items-center justify-end">
-              {isLoading ?
-                <Skeleton className="skeleton h-3 w-[100px] rounded-sm" />
-              : <>
-                  <p className="text-sm text-foreground/70">
-                    {formatNumberOrString({
-                      input: balance?.displayValue,
-                      suffix: selectedToken.symbol,
-                      type: NumberType.TokenNonTx,
-                    })}
-                  </p>
-                  {mode === SwapMode.SELL && (
-                    <Button
-                      className="mx-1 p-0 text-xs"
-                      onClick={onClickMax}
-                      size="sm"
-                      variant="unstyled"
-                    >
-                      Max
-                    </Button>
-                  )}
-                </>
-              }
-            </div>
-          : null}
-        </div>
+      <div className="mt-2 flex items-center justify-between gap-2">
+        {isTokenPriceLoading ?
+          <Skeleton className="skeleton mt-2 h-3 w-[20px] rounded-sm" />
+        : <p className="mt-1 text-sm text-foreground/50">{inputFiatValue}</p>}
+        {(
+          isConnected &&
+          isBaseSelected &&
+          selectedToken &&
+          balance?.value &&
+          balance.value > BigInt(0)
+        ) ?
+          <div className="flex w-full items-center justify-end">
+            {isLoading ?
+              <Skeleton className="skeleton h-3 w-[100px] rounded-sm" />
+            : <>
+                <p className="text-sm text-foreground/70">
+                  {formatNumberOrString({
+                    input: balance?.displayValue,
+                    suffix: selectedToken.symbol,
+                    type: NumberType.TokenNonTx,
+                  })}
+                </p>
+                {mode === SwapMode.SELL && (
+                  <Button
+                    className="mx-1 p-0 text-xs"
+                    onClick={onClickMax}
+                    size="sm"
+                    variant="unstyled"
+                  >
+                    Max
+                  </Button>
+                )}
+              </>
+            }
+          </div>
+        : null}
       </div>
     </div>
   );

@@ -47,7 +47,7 @@ const SwapReviewModal = ({
         <div className="mt-4 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2">
-              <p className="text-2xl text-foreground">
+              <p className="text-xl text-foreground md:text-2xl">
                 {formatNumberOrString({
                   input: formatUnits(
                     swapAmounts[SwapMode.SELL].rawValue,
@@ -70,7 +70,8 @@ const SwapReviewModal = ({
           <ArrowDown className="size-6 text-foreground/80" />
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2">
-              <p className="text-2xl text-foreground">
+              <p className="text-xl text-foreground md:text-2xl">
+                {' '}
                 {formatNumberOrString({
                   input: formatUnits(
                     swapAmounts[SwapMode.BUY].rawValue,
@@ -104,7 +105,8 @@ const SwapReviewModal = ({
           {swapActionButtonState.isLoading ?
             <>
               <Loader2 className="size-xl animate-spin" />
-              {swapActionButtonState.label}
+              <span className="md:hidden">Swapping</span>
+              <span className="hidden md:inline">{swapActionButtonState.label}</span>
             </>
           : 'Swap'}
         </Button>
