@@ -28,9 +28,21 @@ export const TokenLogo = ({ className = '', size = 40, tokenSrc }: TokenLogoProp
   const sizeClass = getSizeClass(size);
   return (
     <div className={`relative ${className} ${sizeClass}`}>
-      <img alt="Token logo" className="rounded-full object-cover" src={tokenSrc || FallbackLogo} />
+      <img
+        alt="Token logo"
+        className="rounded-full object-cover"
+        src={tokenSrc || FallbackLogo}
+        // prevent flash of unstyled huge image
+        style={{ maxWidth: 24 }}
+      />
       <div className="absolute -right-2 -bottom-0.5 flex h-[55%] w-[55%] items-center justify-center overflow-hidden rounded-full border-2 border-background bg-background">
-        <img alt={`base network`} className="object-contain" src={BaseLogo || FallbackLogo} />
+        <img
+          alt={`base network`}
+          className="object-contain"
+          src={BaseLogo || FallbackLogo}
+          // prevent flash of unstyled huge image
+          style={{ maxWidth: 24 }}
+        />
       </div>
     </div>
   );
