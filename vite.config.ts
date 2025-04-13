@@ -4,6 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import rollupNodePolyFill from 'rollup-plugin-node-polyfills';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -34,6 +35,14 @@ export default defineConfig({
       protocolImports: true,
     }),
     svgr(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/assets/fonts/*',
+          dest: 'fonts',
+        },
+      ],
+    }),
   ],
   define: {
     ...(isProd && {
