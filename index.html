@@ -8,6 +8,13 @@
   </head>
   <body>
     <div id="goatai-swap-widget"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <link rel="stylesheet" href="/src/index.css" />
+    <script type="module">
+      import '/src/main-local.ts';
+
+      window.addEventListener('DOMContentLoaded', () => {
+        window.GoataiSwapWidget?.mount();
+      });
+    </script>
   </body>
 </html>
