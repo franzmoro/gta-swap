@@ -118,7 +118,7 @@ const TradeInfoSection = ({
           value={`1 ${selectedTokens[SwapMode.SELL].symbol} = ${formatNumberOrString({
             input: rate,
             suffix: selectedTokens[SwapMode.BUY].symbol,
-            type: NumberType.SwapPrice,
+            type: NumberType.TokenNonTx,
           })} (${formatNumberOrString({
             conversionRate: tokenPriceInUSD,
             input: rate,

@@ -72,7 +72,7 @@ const SwapRateDisplay = ({
         {`1 ${baseToken.symbol} = ${formatNumberOrString({
           input: displayRate,
           suffix: quoteToken.symbol,
-          type: NumberType.TokenTx,
+          type: NumberType.TokenNonTx,
         })}`}{' '}
         <span className="text-primary/55">
           (
