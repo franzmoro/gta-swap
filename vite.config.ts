@@ -53,7 +53,8 @@ export default defineConfig({
     sourcemap: false, // Set to false for production to reduce size
     rollupOptions: {
       plugins: [(rollupNodePolyFill as any)()],
-      external: ['react', 'react-dom'], // Keep only React and ReactDOM external
+      // external: ['react', 'react-dom'], // Keep only React and ReactDOM external
+      external: [],
       output: {
         globals: {
           react: 'React',

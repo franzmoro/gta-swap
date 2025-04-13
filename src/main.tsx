@@ -28,7 +28,7 @@ export function mount(elementId: string) {
   // const timestamp = new Date().getTime();
 
   // Include bundled CSS
-  fetch(`https://goatai-swap-widget.pages.dev/gta-swap1.css`)
+  fetch(`https://goatai-swap-widget.pages.dev/gta-swap.css`)
     .then((response) => response.text())
     .then((css) => {
       style.textContent = css;
