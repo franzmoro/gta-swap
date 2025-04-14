@@ -60,7 +60,10 @@ const SwapReviewModal = ({
               <p className="text-sm text-foreground/60">
                 {formatNumberOrString({
                   conversionRate: sellTokenUSDPrice,
-                  input: swapAmounts[SwapMode.SELL].displayValue,
+                  input: formatUnits(
+                    swapAmounts[SwapMode.SELL].rawValue,
+                    selectedTokens[SwapMode.SELL].decimals
+                  ),
                   type: NumberType.FiatTokenPrice,
                 })}
               </p>
@@ -84,7 +87,10 @@ const SwapReviewModal = ({
               <p className="text-sm text-foreground/60">
                 {formatNumberOrString({
                   conversionRate: buyTokenUSDPrice,
-                  input: swapAmounts[SwapMode.BUY].displayValue,
+                  input: formatUnits(
+                    swapAmounts[SwapMode.BUY].rawValue,
+                    selectedTokens[SwapMode.BUY].decimals
+                  ),
                   type: NumberType.FiatTokenPrice,
                 })}
               </p>
