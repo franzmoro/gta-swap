@@ -2,12 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/goatai-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GTA Swap</title>
+    <title>GOATAI Swap</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="goatai-swap-widget"></div>
+    <link rel="stylesheet" href="/src/index.css" />
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        if (window.GoataiSwapWidget) {
+          window.GoataiSwapWidget.mount();
+        } else {
+          console.error('$GOATAI Swap Widget did not load');
+        }
+      });
+    </script>
   </body>
 </html>

@@ -31,7 +31,7 @@
   font-style: normal;
 }
 
-:root {
+:host {
   --radius: 0.625rem;
 
   --background: oklch(21.77% 0.0714 256.04); /* #01193a */
